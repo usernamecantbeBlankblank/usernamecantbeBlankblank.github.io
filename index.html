@@ -1,178 +1,46 @@
-<!doctype html>
-<html>
+<!DOCTYPE html>
+<html lang="de">
 <head>
-  <meta charset="utf-8">
-  <title>Fettes Würfelset </title>
-  <script type="text/javascript" src="./docs/assets/jquery.min.js"></script>
-  <link rel="stylesheet" href="https://use.typekit.net/ctj7xsz.css">
-	
-  <style> 
-    
-	body{
-		background-color: black; 
-		top:0; 
-		light: 0; 
-		height: 1080px; 
-		width: 1920px; 
-		margin: 0;
-		padding: 0;
-		overflow: hidden; 
-		font-family: "marker-aid", sans-serif;
-font-weight: 400;
-font-style: normal;
-	}
-	
-	.container {
-    width: 1920px;
-    height: 700px;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    align-items: center;
-}
-
-.square {
-    width: 280px; /* Ändere dies auf die gewünschte Breite der quadratischen Divs */
-    height: 280px; /* Ändere dies auf die gewünschte Höhe der quadratischen Divs */
-    margin: 10px; /* Ändere dies auf den gewünschten Abstand zwischen den Divs */
-   -- background-color: #3498db; /* Ändere dies auf die gewünschte Hintergrundfarbe */
-   display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.square img {
-    max-width: 100%;
-    max-height: 100%;
-}
-
-.anzeigenErgebniss {
-	position: relative; 
-	height: 200px; 
-	width: 100%; 
-	top: 100px;
-	 text-align: center;
--- left: 50%;
- --  transform: translateX(-50%); /* Verschiebe das Element um die Hälfte seiner Breite nach links */
-  font-size: 90px; 
-  color: white;
-
-  -- align-items: center; /* Vertikal zentriert */
-  -- justify-content: center; /* Horizontal zentriert */
-}
-
-.historie{
-position: absolute; 
-top: 0; 
-right: 0; 
--- background-color: red; 
-height: 300px; 
-width: 200px; 
-color: grey; 
- text-align: right;
- overflow-y: auto; 
-   /* Webkit-basierte Browser (Chrome, Safari) */
-  scrollbar-width: thin; /* "thin" für eine schmalere Scrollleiste, "auto" für die Standardbreite */
-  scrollbar-color: transparent transparent; /* Hintergrundfarbe und Farbe der Scrollleiste (transparent für unsichtbar) */
-
-  /* Firefox und IE Edge */
-  scrollbar-width: thin;
-
-}
-/* Webkit-basierte Browser (Chrome, Safari) */
-.historie::-webkit-scrollbar {
-  width: 6px; /* Breite der Scrollleiste */
-}
-
-.historie::-webkit-scrollbar-thumb {
-  background-color: transparent; /* Farbe des Scrollbalken-Thumb (transparent für unsichtbar) */
-}
-
-	
-  
-  </style>
-  
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Buttons</title>
+<style>
+    body {
+        background-color: #000;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+    }
+    .button-container {
+        display: flex;
+        justify-content: space-between;
+        width: 200px;
+    }
+    .button {
+        padding: 10px 20px;
+        font-size: 16px;
+        border: none;
+        border-radius: 5px;
+        background-color: #8BC34A; /* Hellgrüne Farbe */
+        color: white;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        cursor: pointer;
+    }
+    .button:hover {
+        background-color: #689F38; /* Hellgrüne Farbe beim Hover */
+    }
+</style>
 </head>
 <body>
 
-<div class = "anzeigenErgebniss"> <p class = "result" > klicke auf einen der Würfel!  </p> </div>
-
-
- <div class="container">
-        <div class="square">
-			<img src="./docs/assets/1.PNG" alt="Bild 1" onclick = "wuerfel(4)">
-		</div>
-        <div class="square">
-			<img src="./docs/assets/2.PNG" alt="Bild 2" onclick = "wuerfel(6)">
-		</div>
-        <div class="square">
-			<img src="./docs/assets/3.PNG" alt="Bild 3" onclick = "wuerfel(8)">
-		</div>
-        <div class="square">
-			<img src="./docs/assets/4.PNG" alt="Bild 4" onclick = "wuerfel(9)">
-		</div>
-        <div class="square">
-			<img src="./docs/assets/5.PNG" alt="Bild 5" onclick = "wuerfel(12)">
-		</div>
-        <div class="square">
-			<img src="./docs/assets/6.PNG" alt="Bild 6" onclick = "wuerfel(20)"> 
-		</div>
-    </div>
-	
-	<div class = "historie">
-		<p> Historie: </p>
-		<p class = "historieAppend">  </p>
-	</div>
-
-
-<script> 
-
-
-
-<!-- function generateRandomNumber(maxNumber) { -->
-    <!-- // Überprüfe, ob die übergebene Zahl positiv ist -->
-    <!-- if (maxNumber <= 0) { -->
-        <!-- console.error("Bitte gib eine positive Zahl größer als 0 ein."); -->
-        <!-- return null; -->
-    <!-- } -->
-
-    <!-- // Generiere eine zufällige Zahl zwischen 1 und maxNumber -->
-    <!-- const randomNumber = Math.floor(Math.random() * maxNumber) + 1; -->
-
-    <!-- return randomNumber; -->
-<!-- } -->
-
-<!-- // Beispielaufruf -->
-<!-- const maxNumber = 10; // Hier die gewünschte Zahl eingeben -->
-<!-- const randomResult = generateRandomNumber(maxNumber); -->
-
-<!-- if (randomResult !== null) { -->
-    <!-- console.log(`Die zufällige Zahl zwischen 1 und ${maxNumber} ist: ${randomResult}`); -->
-<!-- } -->
-
-
-function wuerfel(max) {
-  // Math.floor rundet die Zahl auf die nächstkleinere ganze Zahl ab
-  // Math.random() gibt eine zufällige Dezimalzahl zwischen 0 (inklusive) und 1 (exklusive) zurück
-  // Die Multiplikation und das Additionsglied sorgen dafür, dass die Zahl im gewünschten Bereich liegt
-  var gewuerfelteZahl = Math.floor(Math.random() * max) + 1;
-  console.log(gewuerfelteZahl);
-$(".result").html(gewuerfelteZahl); 
-$(".historieAppend").prepend("W-"+ max + ": " + gewuerfelteZahl); 
-$(".historieAppend").prepend('<br>'); 
-
-  
-  <!-- return gewuerfelteZahl -->
-}
-
-// Beispielaufruf
-<!-- var randomNum = wuerfel(6); -->
-<!-- console.log(randomNum); -->
-
-
-</script>
-
-
+<div class="button-container">
+    <button class="button" onclick="window.location.href='wuerfelset-dnd.html'">Würfelset DND</button>
+    <button class="button" onclick="window.location.href='app-test.html'">App-Test</button>
+</div>
 
 </body>
 </html>
