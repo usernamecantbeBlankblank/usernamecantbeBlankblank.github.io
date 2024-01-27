@@ -60,50 +60,51 @@ font-style: normal;
 }
 
 .dialogpng{
-	-- position: absolute; 
-	heigth: auto; 
+	position: fixed; 
+	height: 50%; 
 	width: 100%; 
 	display: block; 
+    bottom: 0; 
 }
 
 .leftcharacter{
 	position: absolute; 
-	left: 20px; 
-	height: 1000px;
+	left: -100px;   
+	height: 120%;
 	width: auto; 	
-	top: -110px; 
+    bottom: -100px; 
 }
 
 .rightcharacter{
 	position: absolute; 
-	right: -60px; 
-	height: 1000px; 
+	right: -45px; 
+	height: 100%; 
 	width: auto; 
-	top: 0px; 
+	bottom: 0px; 
 }
 
 
 
 
 .leftcharacterpng{
-height: 800px; 
+height: 100%; 
 width: auto; 
 
 }
 
 .rightcharacterpng{
-height: 900px; 
+height: 100%; 
 width: auto;
 }
 
 .textposition{
-	position: absolute; 
-	top: 15%; 
+	position: fixed; 
+	bottom: 10%; 
   left: 50%;
   height: 40px;  
-	width:  1600px; 
+	width:  80%; 
   transform: translate(-50%, -50%);
-  font-size: 90px;
+  font-size: 4vw;
 
 }
 
@@ -146,6 +147,7 @@ var currentIndex = 0;
 console.log("current Index text",currentIndex ); 
 
 
+var clickProcessed = false;
 
 
 // Funktion zum Anzeigen des aktuellen Textes
@@ -172,6 +174,14 @@ function showCurrentText() {
 
 // Event-Listener für Mausklick oder Touch LINKE ODER RECHTE SEITE:
 $(document).on('click touchstart', function(e) {
+  // Wenn ein Klick bereits verarbeitet wurde, beende die Funktion
+  if (clickProcessed) {
+    return;
+  }
+
+  // Setze das Flag, um anzuzeigen, dass ein Klick verarbeitet wird
+  clickProcessed = true;
+
   // Die Bildschirmbreite
   var screenWidth = $(window).width(); 
   // Der Punkt, an dem der Benutzer geklickt oder berührt hat
@@ -186,8 +196,7 @@ $(document).on('click touchstart', function(e) {
     if (currentIndex > 0) {
       currentIndex--;
       showCurrentText();
-	  console.log("current Index text",currentIndex ); 
-
+      console.log("current Index text",currentIndex ); 
     }
   } else {
     console.log("Rechtes Drittel wurde getippt/angeklickt");
@@ -197,10 +206,14 @@ $(document).on('click touchstart', function(e) {
     if (currentIndex < datenjson.length - 1) {
       currentIndex++;
       showCurrentText();
-	  console.log("current Index text",currentIndex ); 
-
+      console.log("current Index text",currentIndex ); 
     }
   }
+
+  // Setze ein Timeout, um das Flag nach einer kurzen Zeitspanne zurückzusetzen
+  setTimeout(function() {
+    clickProcessed = false;
+  }, 500); // 500 Millisekunden als Beispielwert, je nach Bedarf anpassen
 });
 
 // Initialen Text anzeigen
