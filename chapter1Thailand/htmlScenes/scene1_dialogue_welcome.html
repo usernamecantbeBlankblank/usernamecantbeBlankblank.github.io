@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title>Dialog testdurchlauf</title>
+    <script src="../jsonDialogAnfang.js"></script>
+	<script type="text/javascript" src="../jquery.min.js"></script>
+	<link rel="stylesheet" href="https://use.typekit.net/jxt0ckq.css">
+		<!-- font-family: "moonblossom", sans-serif; -->
+		<!-- font-weight: 400; -->
+		<!-- font-style: normal; -->
+		<link rel="stylesheet" href="https://use.typekit.net/eae7gsr.css">
+		<!-- font-family: "duper", sans-serif; -->
+		<!-- font-weight: 600; -->
+		<!-- font-style: normal; -->
+	
+	
+<style> 
+
+html, body{
+	background-color: #ffc062;
+	top: 0px; 
+	left: 0px; 
+	padding: 0; 
+	margin: 0; 
+	height: 100%; 
+	width: 100%; 
+	z-index: 8; 
+	position: fixed; 
+	overflow: hidden;
+	
+font-family: "duper", sans-serif;
+font-weight: 600;
+font-style: normal;
+
+-webkit-user-select: none; /* Chrome, Safari, Opera */
+-moz-user-select: none; /* Firefox */
+-ms-user-select: none; /* IE 10+ */
+user-select: none; /* Standard */
+
+}
+
+
+.speechbublediv{
+	position: absolute; 
+	bottom: 0px; 
+	height: 30vw; 
+	left: 0px; 
+	width: 100vw; 
+	z-index: 99; 
+	align-items: center;
+
+  background-image: url('../Assets/links.PNG'); 
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+
+  
+  display: flex; 
+  justify-content: center; 
+  align-items: center; 
+
+}
+
+.characterdiv{
+	height: 100vh; 
+	width: 100vw;
+	top: 0px;
+	left: 0px;
+	position: absolute; 
+	margin: 0;
+	padding: 0;  
+}
+
+
+.leftcharacter{
+	position: absolute;  
+	height: 150vh;
+	width: 100vw;  
+  left: -400px;
+  bottom: -350px;
+ 
+  background-image: url('../Assets/characters/main/friedolin.PNG'); 
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  z-index: 99; 
+}
+
+.rightcharacter{
+	position: absolute; 
+	height: 100vh; 
+	width: 60vw;
+  right: -190px;   
+  bottom: -50px; 
+  background-image: url('../Assets/characters/main/poco.PNG'); 
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  z-index: 99; 
+}
+
+.textposition{
+	width:  80%; 
+  margin-top: 7%;
+  font-size: 4vw;
+}
+
+
+
+#sprecherName{
+  position: absolute; 
+  text-align: left;
+  top: 20%; 
+  left: 10%; 
+  font-size: 2.5vw;
+  color: grey;
+  width: 80%;  
+}
+
+#overlaybriefkasten{
+
+  width: 100vw; 
+  height: 100vh; 
+  background-color: #ffc062;
+	top: 0px; 
+	left: 0px; 
+	padding: 0; 
+	margin: 0; 
+  position: absolute; 
+  z-index: 999; 
+  display: none; 
+
+}
+
+#overlaybriefkastenImage{
+
+  width: 100vw; 
+  height: 100vh; 
+  position: absolute; 
+
+  background-image: url('../Assets/props/thailand/scene1/postClosed.png'); 
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  animation: pulse 3s infinite;
+}
+
+
+@keyframes pulse {
+    0% {
+        transform: scale(1); /* Normalgröße */
+    }
+    50% {
+        transform: scale(1.1); /* Größer */
+    }
+    100% {
+        transform: scale(1); /* Zurück zur Normalgröße */
+    }
+}
+
+
+#klickhelper{
+   height: 400px; 
+   width: 400px; 
+  transform: translate( -50%, -50% ); 
+  left: 70%; 
+  top: 50%; 
+  position: absolute; 
+
+  background-image: url('../Assets/buttons/klick.PNG'); 
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+
+  animation: clickAnimation 6s infinite; 
+    opacity: 0;
+    display: none; 
+    pointer-events: none;
+
+}
+
+@keyframes clickAnimation {
+    0% {
+        transform: translateY(0); /* Finger anfangs auf gleicher Höhe */
+        opacity: 0; /* Anfangs unsichtbar */
+    }
+    25% {
+        transform: translateY(5px); /* Finger bewegt sich nach unten */
+        opacity: 1; /* Sichtbar während der Bewegung nach unten */
+    }
+    35% {
+        transform: translateY(0); /* Finger zurück auf gleicher Höhe */
+        opacity: 1; /* Weiterhin sichtbar */
+    }
+    45% {
+        transform: translateY(-5px); /* Finger bewegt sich nach oben */
+        opacity: 1; /* Sichtbar während der Bewegung nach oben */
+    }55%{
+      opacity: 0; 
+    }100% {
+        transform: translateY(0); /* Finger wieder auf gleicher Höhe */
+        opacity: 0; /* Wieder unsichtbar */
+    }
+}
+
+
+</style>
+
+
+
+</head>
+
+
+
+<body>
+
+
+
+<div class = "characterdiv"> 
+  <div class = "leftcharacter" > </div>
+  <div class = "rightcharacter" > </div>
+</div>
+
+<div class = "speechbublediv" > 
+  <p id="sprecherName">Friedolin</p>
+		<p class = "dialogtext textposition"> test</p>
+</div>
+
+<div id = "overlaybriefkasten"> 
+
+  <div id = "overlaybriefkastenImage"> </div>
+  <div id = "klickhelper"></div>
+</div>
+
+
+<script> 
+  var timer;
+var indexPostcardimages = 0; 
+var datenjson = JSON.parse(datenJson);
+console.log(datenjson); 
+
+var wirBefindenUnsImOverlay = false; 
+
+// Aktueller Index im JSON-Array
+var currentIndex = 0;
+console.log("current Index text",currentIndex ); 
+
+
+$("#overlaybriefkastenImage").on("click", function(event) {
+    // Verhindere, dass das Klickereignis weitergeleitet wird
+    event.stopPropagation();
+    
+    // Führe hier den Code aus, den du für das Klicken auf das div ausführen möchtest
+});
+
+var clickProcessed = false;
+
+function showKlickHelper() {
+        $("#klickhelper").fadeIn("slow");
+    }
+
+    // Setze Timer
+    timer = setTimeout(showKlickHelper, 6000); // 6000 Millisekunden entsprechen 6 Sekunden
+
+    // Überwache Klick auf das Element mit der ID #overlaybriefkasten
+    $("#overlaybriefkasten").on("click", function() {
+        // Lösche den Timer, wenn ein Klick erfolgt
+        clearTimeout(timer);
+    });
+
+// Funktion zum Anzeigen des aktuellen Textes
+function showCurrentText() {
+/*   // Den aktuellen Datensatz abrufen
+  var currentData = datenjson[currentIndex];
+  
+  // Den Sprechtext und die Sprechseite abrufen und HTML-Entities ersetzen
+  var text = currentData.text.replace(/&quot;/g, '"');
+  var sprechSeite = currentData.sprechSeite;
+  
+  console.log("current text an sich: ", text); 
+  
+  // Das entsprechende Bild basierend auf der Sprechseite auswählen
+  var bildQuelle = sprechSeite === "links" ? "../Assets/links.PNG" : "../Assets/rechts.PNG";
+
+  // Das Bild und den Text in das HTML einfügen
+  $(".speechbublediv").css("background-image", "url(" + bildQuelle + ")");
+  $(".dialogtext").text(text); */
+
+ 
+
+  var dialogue = datenjson[currentIndex]; 
+
+  var dialoguetext = dialogue.text; 
+  var nameSpeaker = dialogue.Name; 
+  var side = dialogue.sprechSeite; 
+
+ if ( side == "links" ){
+  console.log("links ist gefordert"); 
+  $("#sprecherName").css("text-align", "left"); 
+  $("#sprecherName").html(nameSpeaker); 
+  $(".dialogtext ").html(dialoguetext);
+  $(".speechbublediv").css("background-image", "url(../Assets/links.PNG)");
+  $(".rightcharacter").css({
+    "opacity": "0.5", 
+    "transition": "opacity 0.5s, transform 0.5s",
+    "transform": "translateX(10%) scale(0.9) "
+  });
+  $(".leftcharacter").css({
+    "opacity": "1",
+    "transition": "opacity 0.5s, transform 0.5s", 
+    "transform": "translateX(0%) scale(1) "
+  });
+
+ }else if (side == "rechts"){
+  console.log("rechts ist gefordert"); 
+  $("#sprecherName").css("text-align", "right");
+  $("#sprecherName").html(nameSpeaker);  
+  $(".dialogtext ").html(dialoguetext);
+  $(".speechbublediv").css("background-image", "url(../Assets/rechts.PNG)"); 
+  $(".leftcharacter").css({
+    "opacity": "0.5", 
+    "transition": "opacity 0.5s, transform 0.5s",
+    "transform": "translateX(-10%) scale(0.9) "
+  });
+  $(".rightcharacter").css({
+    "opacity": "1", 
+    "transition": "opacity 0.5s, transform 0.5s",
+    "transform": "translateX(0%) scale(1) "
+  });
+
+
+
+ }
+
+
+
+}
+
+// Kontext menü aus 
+document.addEventListener('contextmenu', function(event) {
+    event.preventDefault();
+});
+
+
+
+// Event-Listener für Mausklick oder Touch LINKE ODER RECHTE SEITE:
+$(document).on('click touchstart', function(e) {
+  // Wenn ein Klick bereits verarbeitet wurde, beende die Funktion
+  if (clickProcessed || wirBefindenUnsImOverlay == true ) {
+    return;
+  }
+
+  // Setze das Flag, um anzuzeigen, dass ein Klick verarbeitet wird
+  clickProcessed = true;
+
+  // Die Bildschirmbreite
+  var screenWidth = $(window).width(); 
+  // Der Punkt, an dem der Benutzer geklickt oder berührt hat
+  var touchX = e.originalEvent.touches ? e.originalEvent.touches[0].clientX : e.clientX;
+
+  // Überprüfen, ob der Punkt links oder rechts von der Mitte des Bildschirms liegt
+  if (touchX < screenWidth / 2) {
+    console.log("Linkes Drittel wurde getippt/angeklickt");
+
+    if (currentIndex > 0) {
+      currentIndex--;
+      showCurrentText();
+      console.log("current Index text",currentIndex ); 
+    }
+  } else {
+    
+    if (currentIndex < 2) {
+      currentIndex++;
+      showCurrentText();
+      console.log("current Index text",currentIndex ); 
+    }else if (currentIndex == 2){
+      console.log("nun ist zeit zum nächsten Link zu springen"); 
+      $("#overlaybriefkasten").fadeIn("slow");
+      showKlickHelper();
+      wirBefindenUnsImOverlay = true;  
+
+
+      
+    }
+
+
+  }
+
+  // Setze ein Timeout, um das Flag nach einer kurzen Zeitspanne zurückzusetzen
+  setTimeout(function() {
+    clickProcessed = false;
+  }, 500); // 500 Millisekunden als Beispielwert, je nach Bedarf anpassen
+});
+
+// Initialen Text anzeigen
+showCurrentText();
+
+
+$("#overlaybriefkastenImage").on("click", function() {
+        
+
+  console.log("klick erkannt"); 
+    $("#klickhelper").css({
+
+    "display": "none", 
+    "animation": "none"
+
+  }); 
+
+ 
+
+  if (indexPostcardimages == 0 ){
+
+    $("#overlaybriefkastenImage").css("background-image", "url('../Assets/props/thailand/scene1/postOpen.png')"); 
+    $(this).css("animation", "none");
+
+  }else if ( indexPostcardimages == 1){
+    $("#overlaybriefkastenImage").css("background-image", "url('../Assets/props/thailand/scene1/postcardFront.png')"); 
+    $("#overlaybriefkastenImage").css("transform", "scale(2)"); 
+    
+  }else if ( indexPostcardimages == 2 ){
+    $("#overlaybriefkastenImage").css("background-image", "url('../Assets/props/thailand/scene1/postcardBack.png')"); 
+    $("#overlaybriefkastenImage").css("transform", "scale(1.7)"); 
+
+  }else if ( indexPostcardimages == 3 ){
+    $("#overlaybriefkastenImage").css("background-image", "url('../Assets/props/thailand/scene1/postcardDetail.png')"); 
+    $("#overlaybriefkastenImage").css("transform", "scale(1.9)"); 
+    
+  }else if ( indexPostcardimages == 4){
+   /*  window.location.href = './scene2_recivig_letter.html'; */
+  }
+
+
+  indexPostcardimages++; 
+
+    });
+
+
+
+  
+
+
+</script>
+
+
+</body>
+</html>
