@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dialog testdurchlauf</title>
-    <script src="jsonDialogAnfang.js"></script>
-	<script type="text/javascript" src="jquery.min.js"></script>
+    <script src="../jsonDialogAnfang.js"></script>
+	<script type="text/javascript" src="../jquery.min.js"></script>
 	<link rel="stylesheet" href="https://use.typekit.net/jxt0ckq.css">
 		<!-- font-family: "moonblossom", sans-serif; -->
 		<!-- font-weight: 400; -->
@@ -122,16 +122,16 @@ width: auto;
 
 <div class = "characterdiv"> 
 <div class = "leftcharacter" > 
-	<img src = ".\Assets\characters\main\friedolin.png" class = "leftcharacterpng" > 
+	<img src = "..\Assets\characters\main\friedolin.png" class = "leftcharacterpng" > 
 </div>
 <div class = "rightcharacter" >
-	<img src = ".\Assets\characters\main\poco.png" class = "rightcharacterpng" > 
+	<img src = "..\Assets\characters\main\poco.png" class = "rightcharacterpng" > 
  </div>
 
 </div>
 
 <div class = "speechbublediv" > 
-	<img src="./Assets/rechts.png" class = "dialogpng"  >
+	<img src="../Assets/rechts.png" class = "dialogpng"  >
 		<p class = "dialogtext textposition"> test</p>
 
 </div>
@@ -162,7 +162,7 @@ function showCurrentText() {
   console.log("current text an sich: ", text); 
   
   // Das entsprechende Bild basierend auf der Sprechseite auswählen
-  var bildQuelle = sprechSeite === "links" ? "./Assets/links.PNG" : "./Assets/rechts.PNG";
+  var bildQuelle = sprechSeite === "links" ? "../Assets/links.PNG" : "../Assets/rechts.PNG";
 
   // Das Bild und den Text in das HTML einfügen
   $(".dialogpng").attr("src", bildQuelle);

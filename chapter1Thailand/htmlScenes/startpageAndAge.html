@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dialog testdurchlauf</title>
+	<script type="text/javascript" src="../jquery.min.js"></script>
+	<link rel="stylesheet" href="https://use.typekit.net/jxt0ckq.css">
+		<!-- font-family: "moonblossom", sans-serif; -->
+		<!-- font-weight: 400; -->
+		<!-- font-style: normal; -->
+		<link rel="stylesheet" href="https://use.typekit.net/eae7gsr.css">
+		<!-- font-family: "duper", sans-serif; -->
+		<!-- font-weight: 600; -->
+		<!-- font-style: normal; -->
+	
+	
+<style> 
+
+html, body{
+	background-color: #ffc062;
+	top: 0px; 
+	left: 0px; 
+	padding: 0; 
+	margin: 0; 
+	height: 100%; 
+	width: 100%; 
+	z-index: 8; 
+	position: fixed; 
+	overflow: hidden;
+	
+font-family: "duper", sans-serif;
+font-weight: 600;
+font-style: normal;
+
+}
+
+#picturebehindThePage{
+    position: absolute; 
+    height: 80vh; 
+    width: 50vw; 
+    /* background-color: blueviolet; */
+    transform: translate( -50%, -60%); 
+    left: 50%; 
+    top: 50%; 
+
+    background-image: url('../Assets/characters/main/startPic.PNG');
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center;
+
+
+}
+
+
+#startIcon{
+    height: 500px;
+    position: absolute; 
+    width: 300px; 
+    /* background-color: blueviolet;  */
+    left: 50%; 
+    bottom: 15%; 
+    transform: translate( -50%, 50%); 
+
+    background-image: url('../Assets/buttons/startButton.PNG');
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center;
+    cursor: pointer;  
+    transition: transform 0.3s ease;
+}
+
+
+#startIcon:hover{
+
+    transform: translate(-50%, 50%) scale(1.2)
+}
+
+.animatePicture {
+    animation: flyaway 1s ease-out forwards; /* Hier wird die Animation definiert */
+}
+
+@keyframes flyaway {
+    0% {
+        transform: translate(-50%, -60%); 
+    }100% {
+        transform: translate(80%, -60%); 
+    }
+}
+
+#ageContainer{
+    height: 100vh; 
+    width: 100vw; 
+    display: none; 
+   
+
+}
+
+#headline{
+
+    position: absolute; 
+    height: 100px; 
+    width: 400px; 
+    font-size: 50px; 
+
+}
+
+#allOfTheAgeDivs{
+
+
+
+}
+
+
+</style> 
+</head>
+<body>
+
+
+<div id = "picturebehindThePage" > </div>
+<div id = "startIcon"> </div>
+<div id = "ageContainer"> 
+    <div id = "headline"> Hallo Abenteurer! Wie alt bist du? </div>
+    <div id = "allOfTheAgeDivs"> </div>
+
+</div>
+
+<script> 
+    $(document).ready(function(){
+        $('#startIcon').on('click', function(){
+            $('#picturebehindThePage').addClass('animatePicture').on('animationend', function() {
+                $('#startIcon').fadeOut('slow', function() {
+                    // Ausgeführt, wenn das Ausblenden abgeschlossen ist
+                    $('#ageContainer').fadeIn('slow'); // Füge das Element #ageContainer ein
+                });
+            });
+        });
+        });
+
+
+
+
+
+</script>
+    
+</body>
+</html>
