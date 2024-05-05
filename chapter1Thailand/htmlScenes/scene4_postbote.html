@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-    <title>Dialog testdurchlauf</title>
-    <script src="../jsonDialogAnfang.js"></script>
+    <title>Dialog Postbote </title>
+    <script src="../jsonDialogPostbote.js"></script>
 	<script type="text/javascript" src="../jquery.min.js"></script>
 	<link rel="stylesheet" href="https://use.typekit.net/jxt0ckq.css">
 		<!-- font-family: "moonblossom", sans-serif; -->
@@ -258,20 +258,20 @@ $(document).on('click touchstart', function(e) {
   if (touchX < screenWidth / 2) {
     console.log("Linkes Drittel wurde getippt/angeklickt");
 
-    if (currentIndex > 3) {
+    if (currentIndex > 0) {
       currentIndex--;
       showCurrentText();
       console.log("current Index text",currentIndex ); 
     }
   } else {
     
-    if (currentIndex < 8) {
+    if (currentIndex < 20) {
       currentIndex++;
       showCurrentText();
       console.log("current Index text",currentIndex ); 
-    }else if (currentIndex == 8){
+    }else if (currentIndex == 20){
       console.log("nun ist zeit zum nächsten Link zu springen"); 
-      window.location.href = './scene3_write_letter.html';
+      window.location.href = './scene5_erdkugel';
     }
 
 
