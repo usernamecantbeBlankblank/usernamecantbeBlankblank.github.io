@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Map the world</title>
+<script type="text/javascript" src="jquery.min.js"></script>
+<style>
+
+
+
+	body{
+		heigth: 100%; 
+		width: 100%; 
+		margin: 0px; 
+		top: 0; 
+		left: 0; 
+		right: 0; 
+		bottom: 0; 
+		overflow: hidden; 
+		font-family: Arial;
+
+	}
+
+	#map{ 
+		position: absolute; 
+		height: 100%;
+		width: 1920px; 
+		right: 0; 
+		z-index: 1;
+		background-color: black; 
+	}
+	
+	/* CSS-Stile für den Pulsieren-Effekt */
+	@keyframes pulse {
+	  0% { opacity: 1; }
+	  50% { opacity: 0.5; }
+	  100% { opacity: 1; }
+	}
+
+	.pulse-overlay {
+	  animation: pulse 3s 2;
+	}
+
+	#startGameButton{
+	position: absolute; 
+		bottom: 30px; 
+		left: 50%; 
+		-- height: 50px; 
+		-- width: 200px; 
+		z-index: 999; 
+	}
+	
+	.btnstyle{
+		background: #d98934;
+		-- background-image: -webkit-linear-gradient(top, #d98934, #b8402b);
+		-- background-image: -moz-linear-gradient(top, #d98934, #b8402b);
+		-- background-image: -ms-linear-gradient(top, #d98934, #b8402b);
+		-- background-image: -o-linear-gradient(top, #d98934, #b8402b);
+		-- background-image: linear-gradient(to bottom, #d98934, #b8402b);
+		-webkit-border-radius: 28;
+		-moz-border-radius: 28;
+		border-radius: 28px;
+		font-family: Arial;
+		color: #ffffff;
+		font-size: 29px;
+		padding: 10px 20px 10px 20px;
+		text-decoration: none;
+		border: none;
+		transition: background-color 0.3s ease;
+	}
+	
+	.btnstyle:hover {
+	  background: #fc3c3c;
+	  -- background-image: -webkit-linear-gradient(top, #fc3c3c, #d98134);
+	  -- background-image: -moz-linear-gradient(top, #fc3c3c, #d98134);
+	  -- background-image: -ms-linear-gradient(top, #fc3c3c, #d98134);
+	  -- background-image: -o-linear-gradient(top, #fc3c3c, #d98134);
+	  -- background-image: linear-gradient(to bottom, #fc3c3c, #d98134);
+	  text-decoration: none;
+	  border: none;
+	}
+	
+	#flexContainer{
+	  position: absolute; 
+      display: flex; 
+	  justify-content: center;
+	  align-items: center; 
+	  height: 100%;
+	  width: 100%; 
+	  top: 0; 
+	  bottom: 0; 
+	  left: 0; 
+	  right: 0; 
+	  
+	}
+	
+	#gametextOverlay{
+		width: 500px; 
+		height: 200px;
+		z-index: 99;
+		display: flex; 
+		justify-content: center;
+		align-items: center;
+		position: relative; 
+		
+	}
+	
+	.textbackgroundimg{
+		display: none; 
+		position absolute; 
+		height: 400px;
+		width: 700px; 
+		left: 50%;
+		top: 50%;
+		transform: translate(-50%, -50%);
+		
+	}
+
+
+</style>
+<link rel="stylesheet" href="./leaflet/leaflet.css" />
+<script src="./leaflet/leaflet.js" ></script>
+</head>
+
+
+<body>
+
+	<div id="map"></div>
+	
+	<div id = "flexContainer"> 
+		<div id = "gametextOverlay" style = "display: none"> <img class = "textbackgroundimg" src = "./Assets/buttons/textField.PNG"> kihjdgbfiwebfj jf iufiseuf iesufiesfu iseeif esiufgseiu iufif uie iug iseufgsif guirjfguizrg uigiurgf ui giuzg iugf uigfuiagui giujrfgikrghkisjf giksuej seikfh ikujd fvikgriifisfd gvwess dhgfsr ih gikeg rsg isd gfr ifvr sd f greisfr gdg i fserdg igfer wigfgr wir fgig rfwwef riw efrifw giuf ifivsd fei wf eifei iiiefw iwef giuwei ew iefbf weef kwe fkjhe f ij ki  ikifj fi jo ljwkdhv ifej nhdfgv sjk hgf j hjgs kisj jhsfd kijdsf jhsd jkhs jhdsf h fjkhf h dfikv wijvkij wdk jbwej wkqjbc jw dk</div>
+	</div>
+<button id="startGameButton" class = "btnstyle">Spiel starten</button>
+<script> 
+//map with default layers added 
+var map = L.map('map', {
+  zoomControl: false,
+  crs: L.CRS.Simple,
+  attributionControl: false,
+  minZoom: -4
+}).setView([51.505, -0.09], 12);
+
+L.control.zoom({
+  position: 'bottomright'
+}).addTo(map);
+
+var bounds = [
+  [0, 0],
+  [1640, 2360],
+];
+
+var imageUrl = './Assets/map/map.PNG';
+var altText = 'Karte von der Welt';
+
+var image = L.imageOverlay(imageUrl, bounds).addTo(map);
+
+map.fitBounds(bounds);
+
+var layerControl = L.control.layers().addTo(map);
+
+var popup = L.popup();
+
+
+// Funktion um koordinaten die ich auf map geklicktz hab zu bestimmen: 
+<!-- function onMapClick(e) { -->
+  <!-- popup -->
+    <!-- .setLatLng(e.latlng) -->
+    <!-- .setContent("You clicked the map at " + e.latlng.toString()) -->
+    <!-- .openOn(map); -->
+<!-- } -->
+
+<!-- map.on('click', onMapClick); -->
+
+// Erstelle Marker mit Popups
+var marker1 = L.marker([1036, 1226]).addTo(map)
+  .bindPopup('Deutschland, Berlin')
+  .on('click', function (){
+	 if (!this.overlay) {
+      var overlayImageUrl = './Assets/map/deutschland_overlay.PNG';
+      var overlayBounds = bounds; // Verwende die gleichen Grenzen wie für das Kartenbild
+      this.overlay = L.imageOverlay(overlayImageUrl, overlayBounds).addTo(map);
+	  
+	   // Füge CSS-Klasse hinzu, um Pulsieren-Effekt zu aktivieren
+      this.overlay._image.classList.add('pulse-overlay');
+    } else {
+      map.removeLayer(this.overlay);
+      this.overlay = null;
+    }
+  }); 
+
+var marker2 = L.marker([776, 1831]).addTo(map)
+  .bindPopup('Thailand, Bangkok')
+  .on('click', function (){
+	 if (!this.overlay) {
+      var overlayImageUrl = './Assets/map/thailand_overlay.PNG';
+      var overlayBounds = bounds; // Verwende die gleichen Grenzen wie für das Kartenbild
+      this.overlay = L.imageOverlay(overlayImageUrl, overlayBounds).addTo(map);
+    } else {
+      map.removeLayer(this.overlay);
+      this.overlay = null;
+    }
+  }); 
+
+
+var marker3 = L.marker([965, 1948]).addTo(map)
+  .bindPopup('China, Peking')
+  .on('click', function (){
+	 if (!this.overlay) {
+      var overlayImageUrl = './Assets/map/china_overlay.PNG';
+      var overlayBounds = bounds; // Verwende die gleichen Grenzen wie für das Kartenbild
+      this.overlay = L.imageOverlay(overlayImageUrl, overlayBounds).addTo(map);
+    } else {
+      map.removeLayer(this.overlay);
+      this.overlay = null;
+    }
+  }); 
+
+
+
+// Erstelle SVG-Pfad zwischen zwei Markern - funktioniert leider noch nicht ganz TODO
+function createAnimatedPath(marker1, marker2, color) {
+  var latlngs = [marker1.getLatLng(), marker2.getLatLng()];
+
+  var path = L.curve(
+    [
+      'M', latlngs[0].lat, latlngs[0].lng,
+      'L', latlngs[1].lat, latlngs[1].lng
+    ],
+    { color: color }
+  ).addTo(map);
+
+  var pathLength = path._path.getTotalLength();
+
+  var startOffset = pathLength;
+
+  function animatePath() {
+    startOffset -= 10;
+    if (startOffset > 0) {
+      path.setStyle({ dashArray: startOffset + ' ' + pathLength });
+      requestAnimationFrame(animatePath);
+    }
+  }
+
+  animatePath();
+}
+
+<!-- // Animation der Linie zwischen Deutschland und Thailand - funktioniert leider noch nicht ganz TODO -->
+<!-- marker2.on('click', function () { -->
+  <!-- createAnimatedPath(marker1, marker2, 'red'); -->
+<!-- }); -->
+
+<!-- // Animation der Linie zwischen Deutschland und China - funktioniert leider noch nicht ganz TODO -->
+<!-- marker3.on('click', function () { -->
+  <!-- createAnimatedPath(marker1, marker3, 'blue'); -->
+<!-- }); -->
+
+$(document).ready(function() {
+  // Definiere die Länder und ihre zugehörigen Marker
+  var countries = {
+    "Deutschland": marker1,
+    "Thailand": marker2,
+    "China": marker3
+  };
+
+  // Starte das Spiel, wenn der Spielstart-Button geklickt wird
+  $("#startGameButton").click(startGame);
+
+  function startGame() {
+    var countriesArray = Object.keys(countries);
+    var randomCountry = countriesArray[Math.floor(Math.random() * countriesArray.length)];
+    var correctMarker = countries[randomCountry];
+
+    alert("Finde das Land: " + randomCountry);
+
+    // Entferne vorherige Event Listener von allen Markern
+    Object.values(countries).forEach(function(marker) {
+      marker.off("click");
+    });
+
+    // Überprüfe, ob der Benutzer auf den richtigen Marker klickt
+    function checkMarker() {
+      if (this === correctMarker) {
+        alert("Richtig! Du hast das Land gefunden: " + randomCountry);
+      } else {
+        alert("Falsch! Das war nicht das gesuchte Land.");
+      }
+
+      // Entferne den Event Listener, um mehrfache Klicks zu verhindern
+      Object.values(countries).forEach(function(marker) {
+        marker.off("click");
+      });
+
+      // Starte das Spiel erneut
+      startGame();
+    }
+
+    // Füge einen Event Listener hinzu, um zu überprüfen, welchen Marker der Benutzer klickt
+    Object.values(countries).forEach(function(marker) {
+      marker.on("click", checkMarker);
+    });
+  }
+});
+
+
+	
+	
+
+</script>
+
+</body>
+</html>

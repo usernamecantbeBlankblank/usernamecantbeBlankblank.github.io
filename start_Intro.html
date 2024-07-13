@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lerapp first Try</title>
+	<script type="text/javascript" src="jquery.min.js"></script>
+	
+</head>
+
+
+<style> 
+
+body, html {
+
+	background-color: #ffc062;
+	top: 0px; 
+	left: 0px; 
+	padding: 0; 
+	margin: 0; 
+	height: 100%; 
+	width: 100%; 
+	z-index: 8; 
+	position: fixed; 
+	overflow: hidden;
+}
+
+
+.characterdiv{
+	bottom: 0px; 
+	right: 50px;
+	left:  50px;
+	height: 800px; 
+	position: absolute; 
+	background-color: green; 
+	z-index: 10; 
+}
+
+.speechbublediv{
+	-- background-color: red; 
+	position: absolute; 
+	z-index: 11; 
+	bottom: 0px; 
+	left: 30px; 
+	right: 30px; 
+	height: 300px; 
+	
+}
+
+.dialogpng{
+	left: -30px; 
+	position: absolute; 
+	height: 310px; 
+	top: -20px
+
+}
+
+.specialElementsOverlay{
+	background-color: #ffc062;
+	top: 0px; 
+	left: 0px; 
+	padding: 0; 
+	margin: 0; 
+	height: 100%; 
+	width: 100%; 
+	z-index: 14; 
+	position: fixed; 
+	overflow: hidden;
+	-- visibility: hidden; 
+}
+
+.startSite {
+    top: 0px;
+    left: 0px;
+    padding: 0;
+    margin: 0;
+    height: 100%;
+    width: 100%;
+    z-index: 15;
+    position: fixed;
+    overflow: hidden;
+    opacity: 1; /* Setze die Opazität auf 1, um das Element sichtbar zu machen */
+    transition: opacity 1s;
+}
+
+.startSite.hidden {
+    display: none;
+}
+.altersauswahlbildschirm{
+
+	top: 0px; 
+	left: 0px; 
+	padding: 0; 
+	margin: 0; 
+	height: 100%; 
+	width: 100%; 
+	z-index: 15; 
+	position: fixed; 
+	overflow: hidden;
+	opacity: 0; 
+	transition: opacity 1s;
+	display: none; 
+
+}
+
+.altersauswahlbildschirm.show {
+    opacity: 1; /* Setze die Opazität auf 1, um das Element einzublenden */
+    visibility: visible;
+}
+
+.balloonpicstart{
+top: 50px; 
+position: absolute; 
+height: 600px; 
+}
+
+.startButton{
+position: absolute; 
+bottom: 20px; 
+  top: 85%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  height: 300px; 
+
+}
+
+
+
+        @keyframes pulsate {
+            0% {
+                transform: translate(-50%, -50%) scale(1);
+            }
+            50% {
+                transform: translate(-50%, -50%) scale(1.1);
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(1);
+            }
+        }
+
+        .pulsating-image {
+            animation: pulsate 2s infinite;
+            /* Ändere die Dauer (2s) nach Bedarf */
+        }
+		
+		
+	@keyframes flyAway {
+    0% {
+        transform: translateX(0) scale(1);
+    }
+    100% {
+        transform: translateX(100%) scale(1);
+    }
+}
+
+        .fly-away-image {
+            animation: flyAway 2s forwards;
+            /* Ändere die Dauer (2s) nach Bedarf */
+			transform-origin: top left; 
+        }
+
+
+</style>
+
+
+<body>
+
+
+<!-- overlay für alle sachen außerhalb der Reihe -->
+
+<div class = "specialElementsOverlay"> </div>
+
+<!-- STartsite mit Ballon wegfliegen  -->
+<div class = "startSite" >
+
+	<img src = ".\Assets\characters\main\startPic.png" class = "balloonpicstart">
+	<img src = ".\Assets\buttons\startButton.png" class = "startButton pulsating-image" onclick="handleClick()"> 
+
+ </div>
+ 
+ 
+ <!-- AUswahl Alter -->
+ 
+<div class = "altersauswahlbildschirm"> 
+	
+	<p> 
+	Hallo Abenteurer! <br> 
+	Wie alt bist du? <br> 
+	
+	</p>
+
+
+</div>
+
+
+
+
+
+
+<!-- hier sind die ganzen Standartdivs für Charactere, Dialoge und Hintergund drinnen -->
+
+<div class = "characterdiv"> 
+
+
+</div>
+
+<div class = "speechbublediv" > 
+	<img src="./Assets/bubble.png" class = "dialogpng"  >
+
+
+</div>
+
+	<script src="jsonDialog.js"></script>
+<script> 
+
+var datenjson = JSON.parse(datenJson);
+
+console.log(datenjson); 
+
+
+
+
+
+
+
+    // Event-Listener für Mausklick oder Touch LINKE ODER RECHTE SEITE:
+    $(document).on('click touchstart', function(e) {
+      // Die Bildschirmbreite
+      var screenWidth = $(window).width(); 
+      // Der Punkt, an dem der Benutzer geklickt oder berührt hat
+      var touchX = e.originalEvent.touches ? e.originalEvent.touches[0].clientX : e.clientX;
+
+      // Überprüfen, ob der Punkt links oder rechts von der Mitte des Bildschirms liegt
+      if (touchX < screenWidth / 2) {
+        console.log("Linkes Drittel wurde getippt/angeklickt");
+        // Hier kannst du Code für Aktionen in der linken Hälfte ausführen
+      } else {
+        console.log("Rechtes Drittel wurde getippt/angeklickt");
+        // Hier kannst du Code für Aktionen in der rechten Hälfte ausführen
+      }
+	  
+	  
+	
+    });
+	
+	
+	
+function handleClick() {
+    $(".balloonpicstart").addClass("fly-away-image");
+    setTimeout(function () {
+        $(".startSite").addClass("hidden");
+    }, 1000);
+
+    $('.altersauswahlbildschirm').addClass('show');
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+  $(document).ready(function() {
+  
+  
+  
+
+ });
+
+</script>
+
+</body>
+</html>
