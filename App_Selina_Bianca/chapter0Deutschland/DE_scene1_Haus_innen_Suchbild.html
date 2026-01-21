@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Haus Innen - Suchbild</title>
+    
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+        
+        #map {
+            width: 100vw;
+            height: 100vh;
+            background-color: #f0f0f0;
+            cursor: grab;
+        }
+        
+        #map:active {
+            cursor: grabbing;
+        }
+        
+        .arrow {
+            position: fixed;
+            font-size: 50px;
+            color: white;
+            text-shadow: 0 0 10px rgba(0, 0, 0, 0.8), 0 0 20px rgba(0, 0, 0, 0.6);
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.5s;
+            pointer-events: none;
+        }
+        
+        .arrow.show {
+            animation: blink 1s infinite;
+        }
+        
+        @keyframes blink {
+            0%, 100% { opacity: 0; }
+            50% { opacity: 1; }
+        }
+        
+        .arrow-up {
+            top: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        .arrow-down {
+            bottom: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        .arrow-left {
+            top: 50%;
+            left: 50px;
+            transform: translateY(-50%);
+        }
+        
+        .arrow-right {
+            top: 50%;
+            right: 50px;
+            transform: translateY(-50%);
+        }
+        
+        /* Sprechblase Styles */
+        .speech-bubble {
+            position: absolute;
+            background: #ffc062;
+            border: 4px solid #333;
+            border-radius: 20px;
+            padding: 30px 35px;
+            max-width: 300px;
+            min-width: 200px;
+            font-family: "duper", sans-serif;
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            z-index: 2000;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+            animation: bubbleAppear 0.3s ease-out;
+            pointer-events: auto;
+        }
+        
+        @keyframes bubbleAppear {
+            0% {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        
+        @keyframes bubbleDisappear {
+            0% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+        }
+        
+        .speech-bubble.closing {
+            animation: bubbleDisappear 0.2s ease-out forwards;
+        }
+        
+        .speech-bubble::after {
+            content: '';
+            position: absolute;
+            bottom: -20px;
+            left: 50px;
+            width: 0;
+            height: 0;
+            border: 20px solid transparent;
+            border-top-color: #333;
+            border-bottom: 0;
+            margin-left: -20px;
+        }
+        
+        .speech-bubble::before {
+            content: '';
+            position: absolute;
+            bottom: -12px;
+            left: 50px;
+            width: 0;
+            height: 0;
+            border: 16px solid transparent;
+            border-top-color: #ffc062;
+            border-bottom: 0;
+            margin-left: -16px;
+        }
+        
+        .speech-bubble .close-btn {
+            position: absolute;
+            top: 5px;
+            right: 10px;
+            background: none;
+            border: none;
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+            cursor: pointer;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            line-height: 24px;
+            transition: color 0.2s;
+        }
+        
+        .speech-bubble .close-btn:hover {
+            color: #ff0000;
+        }
+        
+        .speech-bubble .bubble-title {
+            font-size: 18px;
+            margin: 0 0 10px 0;
+            padding-right: 30px;
+        }
+        
+        .speech-bubble .bubble-text {
+            margin: 0;
+            line-height: 1.4;
+        }
+        
+        .speech-bubble .audio-btn {
+            margin-top: 15px;
+            background: #333;
+            color: #ffc062;
+            border: none;
+            border-radius: 10px;
+            padding: 10px 20px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            font-family: "duper", sans-serif;
+            transition: all 0.3s ease;
+        }
+        
+        .speech-bubble .audio-btn:hover {
+            background: #ff9d00;
+            color: #333;
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+    
+    <!-- Navigation Pfeile -->
+    <div class="arrow arrow-up">▲</div>
+    <div class="arrow arrow-down">▼</div>
+    <div class="arrow arrow-left">◄</div>
+    <div class="arrow arrow-right">►</div>
+    
+    <!-- jQuery -->
+    <script src="jquery.min.js"></script>
+    
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <!-- Steuerungs-Menü System (Debug, Hauptmenü, Einstellungen, Hilfe) -->
+<script src="./steuerungMenu.js"></script>
+    <script>
+        // ========================================
+        // POLYGON DEFINITIONEN - Hier eintragen!
+        // ========================================
+        var polygonData = [
+            {
+                id: 1,
+                name: "Weltkarte",
+                coordinates: [
+                    // Format: [y, x] in Leaflet (Bildhöhe, Bildbreite)
+                    // Trage hier die Koordinaten ein, die du beim Klicken bekommst
+              [559, 697],
+              [543, 164], 
+              [949, 155], 
+              [941, 690]
+                ],
+                text: "Das ist eine Weltkarte - hier können wir eintragen wo wir bereits waren!",
+                audio: "" // Später: "./Assets/audio/objekt1.mp3"
+            },
+            {
+                id: 2,
+                name: "Postbote",
+                coordinates: [
+                    [740, 1006], 
+                    [679, 1062], 
+                    [433, 1094], 
+                    [423, 912], 
+                    [593, 1009], 
+                    [672, 952]
+
+                 
+                ],
+                text: "Da ist der Postbote - schnell!",
+                audio: "" // Später: "./Assets/audio/objekt2.mp3"
+            }, 
+            {
+                id: 3,
+                name: "Obstkorb",
+                coordinates: [
+                    [247, 1257], 
+                    [153, 1229], 
+                    [124, 1344], 
+                    [142, 1445], 
+                    [292, 1440]
+                  
+                ],
+                text: "Immer genug Obst im Haus!",
+                audio: "" // Später: "./Assets/audio/objekt3.mp3"
+            }, 
+
+            {
+                id: 4,
+                name: "Tür",
+                coordinates: [
+
+                [876, 1611], 
+                [128, 1611], 
+                [125, 1955], 
+                [896, 1959]
+                   
+                  
+                ],
+                text: "Ja! Auf nach draußen!",
+                audio: "" // Später: "./Assets/audio/objekt4.mp3"
+            }, 
+
+            {
+                id: 5,
+                name: "PC",
+                coordinates: [
+                    [554, 640], 
+                    [448, 651], 
+                    [445, 462], 
+                    [550, 453]
+                  
+                ],
+                text: "Den Pc können wir nutzten um unseren Freunden zu schreiben, aber das brauchen wir jetzt nicht.",
+                audio: "" // Später: "./Assets/audio/objekt5.mp3"
+            }
+            // Weitere Objekte hier hinzufügen...
+        ];
+        
+        $(document).ready(function() {
+            // Bild-Dimensionen (passe diese an dein tatsächliches Bild an)
+            var imageWidth = 2000;
+            var imageHeight = 1000;
+            
+            // Berechne die Bounds für das Bild
+            var bounds = [[0, 0], [imageHeight, imageWidth]];
+            
+            // Berechne den initialen Zoom, sodass die Bildhöhe der Bildschirmhöhe entspricht
+            var viewportHeight = window.innerHeight;
+            var viewportWidth = window.innerWidth;
+            var initialZoom = Math.log2(viewportHeight / imageHeight);
+            
+            // Berechne minZoom so, dass keine weißen Ränder erscheinen
+            // Das Bild muss immer mindestens so groß sein, dass es den gesamten Viewport ausfüllt
+            var minZoomHeight = Math.log2(viewportHeight / imageHeight);
+            var minZoomWidth = Math.log2(viewportWidth / imageWidth);
+            var minZoom = Math.max(minZoomHeight, minZoomWidth);
+            
+            // Erstelle die Karte ohne Standard-Tiles
+            var map = L.map('map', {
+                crs: L.CRS.Simple,
+                minZoom: minZoom,
+                maxZoom: 2,
+                center: [0, 0],
+                zoom: initialZoom,
+                zoomControl: true,
+                attributionControl: false,
+                maxBounds: bounds,
+                maxBoundsViscosity: 1.0
+            });
+            
+            // Füge das Bild als Overlay hinzu
+            var image = L.imageOverlay('./Assets/background/DE_haus_innen.png', bounds).addTo(map);
+            
+            // Setze die initiale Ansicht mit dem berechneten Zoom
+            map.setView([imageHeight / 2, imageWidth / 2], initialZoom);
+            
+            // ========================================
+            // KOORDINATEN-ANZEIGE (für Entwicklung)
+            // ========================================
+            // AUSKOMMENTIEREN wenn fertig!
+            /*
+            var coordinateMarker = null;
+            
+            map.on('click', function(e) {
+                var coords = e.latlng;
+                console.log('=========================');
+                console.log('Geklickte Koordinaten:');
+                console.log('Y (Höhe):', Math.round(coords.lat));
+                console.log('X (Breite):', Math.round(coords.lng));
+                console.log('Format für Array: [' + Math.round(coords.lat) + ', ' + Math.round(coords.lng) + ']');
+                console.log('=========================');
+                
+                // Zeige einen temporären Marker an der geklickten Stelle
+                if (coordinateMarker) {
+                    map.removeLayer(coordinateMarker);
+                }
+                
+                coordinateMarker = L.circleMarker(coords, {
+                    radius: 8,
+                    color: 'red',
+                    fillColor: '#ff0000',
+                    fillOpacity: 0.5
+                }).addTo(map);
+                
+                // Zeige Popup mit Koordinaten
+                coordinateMarker.bindPopup(
+                    '<strong>Koordinaten:</strong><br>' +
+                    'Y: ' + Math.round(coords.lat) + '<br>' +
+                    'X: ' + Math.round(coords.lng) + '<br>' +
+                    '<small>[' + Math.round(coords.lat) + ', ' + Math.round(coords.lng) + ']</small>'
+                ).openPopup();
+            });
+            */
+            // ========================================
+            
+            // ========================================
+            // POLYGON-SYSTEM
+            // ========================================
+            var polygons = [];
+            
+            // Zeichne alle Polygone aus dem Array
+            polygonData.forEach(function(item) {
+                var polygon = L.polygon(item.coordinates, {
+                    color: 'transparent',
+                    fillColor: 'transparent',
+                    fillOpacity: 0,
+                    weight: 0
+                }).addTo(map);
+                
+                // Speichere Polygon mit Daten
+                polygons.push({
+                    layer: polygon,
+                    data: item
+                });
+                
+                // Klick-Event für Polygon
+                polygon.on('click', function(e) {
+                    L.DomEvent.stopPropagation(e); // Verhindere dass map.click auch ausgelöst wird
+                    
+                    // Spezielle Behandlung für die Tür
+                    if (item.id === 4 || item.name === "Tür") {
+                        console.log("Tür wurde geklickt - Navigation startet!");
+                        showPolygonInfo(item, e.latlng);
+                        setTimeout(function() {
+                            console.log("Navigiere zu: DE_scene1_Haus_außen_Suchbild.html");
+                            window.location.href = "DE_scene1_Haus_außen_Suchbild.html";
+                        }, 1500);
+                    } else {
+                        showPolygonInfo(item, e.latlng); // Übergebe auch die Klick-Position
+                    }
+                });
+            });
+            
+            // Funktion zum Anzeigen der Polygon-Info
+            var currentBubble = null;
+            
+            function showPolygonInfo(data, clickPosition) {
+                console.log('Polygon angeklickt:', data.name);
+                
+                // Entferne alte Sprechblase falls vorhanden
+                if (currentBubble) {
+                    currentBubble.remove();
+                }
+                
+                // Berechne Position für Sprechblase (nutze Klickposition)
+                var point = map.latLngToContainerPoint(clickPosition);
+                
+                // Erstelle Sprechblase
+                var bubble = document.createElement('div');
+                bubble.className = 'speech-bubble';
+                
+                // Positioniere die Sprechblase so, dass der Pfeil (bei 50px) genau auf die Klickstelle zeigt
+                bubble.style.left = (point.x - 50) + 'px';
+                bubble.style.top = (point.y - 100) + 'px';
+                
+                // Fülle Sprechblase mit Inhalt (OHNE Titel)
+                bubble.innerHTML = 
+                    '<button class="close-btn" onclick="closeSpeechBubble()">×</button>' +
+                    '<p class="bubble-text">' + data.text + '</p>' +
+                    (data.audio ? '<button class="audio-btn" onclick="playAudio(\'' + data.audio + '\')">🔊 Anhören</button>' : '');
+                
+                // Füge Sprechblase zum DOM hinzu
+                document.body.appendChild(bubble);
+                currentBubble = bubble;
+                
+                // Spiele Audio ab (wenn vorhanden)
+                if (data.audio) {
+                    playAudio(data.audio);
+                }
+            }
+            
+            // Funktion zum Schließen der Sprechblase
+            window.closeSpeechBubble = function() {
+                if (currentBubble) {
+                    // Starte Ausblend-Animation
+                    currentBubble.classList.add('closing');
+                    
+                    // Entferne Element nach Animation
+                    setTimeout(function() {
+                        if (currentBubble) {
+                            currentBubble.remove();
+                            currentBubble = null;
+                        }
+                    }, 200); // 200ms = Dauer der Animation
+                }
+            };
+            
+            // Schließe Sprechblase bei Karten-Bewegung
+            map.on('movestart', function() {
+                closeSpeechBubble();
+            });
+            
+            // Schließe Sprechblase auch beim Zoomen
+            map.on('zoomstart', function() {
+                closeSpeechBubble();
+            });
+            
+            // Hilfsfunktion: Berechne Zentrum eines Polygons
+            function calculatePolygonCenter(coordinates) {
+                var sumLat = 0;
+                var sumLng = 0;
+                coordinates.forEach(function(coord) {
+                    sumLat += coord[0];
+                    sumLng += coord[1];
+                });
+                return [sumLat / coordinates.length, sumLng / coordinates.length];
+            }
+            
+            // Audio-Player Funktion
+            window.playAudio = function(audioPath) {
+                if (!audioPath) return;
+                
+                var audio = new Audio(audioPath);
+                audio.play().catch(function(error) {
+                    console.log('Audio konnte nicht abgespielt werden:', error);
+                });
+            };
+            // ========================================
+            
+            // Zeige Pfeile nach 4 Sekunden an
+            var arrowTimeout = setTimeout(function() {
+                $('.arrow').addClass('show');
+            }, 4000);
+            
+            // Verstecke Pfeile bei jeder Interaktion
+            map.on('mousedown touchstart drag', function() {
+                clearTimeout(arrowTimeout);
+                $('.arrow').removeClass('show');
+            });
+        });
+    </script>
+</body>
+</html>
