@@ -217,281 +217,246 @@
         var polygonData = [
             {
                 id: 1,
-                name: "Weltkarte",
+                name: "Briefkasten",
                 coordinates: [
-                    // Format: [y, x] in Leaflet (Bildhöhe, Bildbreite)
-                    // Trage hier die Koordinaten ein, die du beim Klicken bekommst
-              [559, 697],
-              [543, 164], 
-              [949, 155], 
-              [941, 690]
+                  [720, 8266], 
+                  [708, 8386], 
+                  [464, 8356], 
+                  [468, 8278]
+       
                 ],
-                text: "Das ist eine Weltkarte - hier können wir eintragen wo wir bereits waren!",
+                text: "Ah hier ist der Briefkasten!",
                 audio: "" // Später: "./Assets/audio/objekt1.mp3"
             },
             {
                 id: 2,
-                name: "Postbote",
+                name: "Nachbarshaus",
                 coordinates: [
-                    [740, 1006], 
-                    [679, 1062], 
-                    [433, 1094], 
-                    [423, 912], 
-                    [593, 1009], 
-                    [672, 952]
+                 [1272, 6392], 
+                 [1264, 7216], 
+                 [898, 7336], 
+                 [758, 6840], 
+                 [766, 6284]
 
-                 
+       
                 ],
-                text: "Da ist der Postbote - schnell!",
-                audio: "" // Später: "./Assets/audio/objekt2.mp3"
-            }, 
-            {
-                id: 3,
-                name: "Obstkorb",
-                coordinates: [
-                    [247, 1257], 
-                    [153, 1229], 
-                    [124, 1344], 
-                    [142, 1445], 
-                    [292, 1440]
-                  
-                ],
-                text: "Immer genug Obst im Haus!",
-                audio: "" // Später: "./Assets/audio/objekt3.mp3"
-            }, 
+                text: "Oh! das istdas Haus unseres Nachbarn. scheint aber nicht zuhause zu sein...",
+                audio: "" // Später: "./Assets/audio/objekt1.mp3"
 
-            {
-                id: 4,
-                name: "Tür",
-                coordinates: [
-
-                [876, 1611], 
-                [128, 1611], 
-                [125, 1955], 
-                [896, 1959]
-                   
-                  
-                ],
-                text: "Ja! Auf nach draußen!",
-                audio: "" // Später: "./Assets/audio/objekt4.mp3"
-            }, 
-
-            {
-                id: 5,
-                name: "PC",
-                coordinates: [
-                    [554, 640], 
-                    [448, 651], 
-                    [445, 462], 
-                    [550, 453]
-                  
-                ],
-                text: "Den Pc können wir nutzten um unseren Freunden zu schreiben, aber das brauchen wir jetzt nicht.",
-                audio: "" // Später: "./Assets/audio/objekt5.mp3"
             }
-            // Weitere Objekte hier hinzufügen...
+           
         ];
         
         $(document).ready(function() {
-            // Bild-Dimensionen (passe diese an dein tatsächliches Bild an)
-            var imageWidth = 2000;
-            var imageHeight = 1000;
+            // Lade das Bild und checke automatisch die Dimensionen
+            var img = new Image();
+            img.src = './Assets/background/DE_haus_aussen.png';
             
-            // Berechne die Bounds für das Bild
-            var bounds = [[0, 0], [imageHeight, imageWidth]];
-            
-            // Berechne den initialen Zoom, sodass die Bildhöhe der Bildschirmhöhe entspricht
-            var viewportHeight = window.innerHeight;
-            var viewportWidth = window.innerWidth;
-            var initialZoom = Math.log2(viewportHeight / imageHeight);
-            
-            // Berechne minZoom so, dass keine weißen Ränder erscheinen
-            // Das Bild muss immer mindestens so groß sein, dass es den gesamten Viewport ausfüllt
-            var minZoomHeight = Math.log2(viewportHeight / imageHeight);
-            var minZoomWidth = Math.log2(viewportWidth / imageWidth);
-            var minZoom = Math.max(minZoomHeight, minZoomWidth);
-            
-            // Erstelle die Karte ohne Standard-Tiles
-            var map = L.map('map', {
-                crs: L.CRS.Simple,
-                minZoom: minZoom,
-                maxZoom: 2,
-                center: [0, 0],
-                zoom: initialZoom,
-                zoomControl: true,
-                attributionControl: false,
-                maxBounds: bounds,
-                maxBoundsViscosity: 1.0
-            });
-            
-            // Füge das Bild als Overlay hinzu
-            var image = L.imageOverlay('./Assets/background/DE_haus_innen.png', bounds).addTo(map);
-            
-            // Setze die initiale Ansicht mit dem berechneten Zoom
-            map.setView([imageHeight / 2, imageWidth / 2], initialZoom);
-            
-            // ========================================
-            // KOORDINATEN-ANZEIGE (für Entwicklung)
-            // ========================================
-            // AUSKOMMENTIEREN wenn fertig!
-            /*
-            var coordinateMarker = null;
-            
-            map.on('click', function(e) {
-                var coords = e.latlng;
-                console.log('=========================');
-                console.log('Geklickte Koordinaten:');
-                console.log('Y (Höhe):', Math.round(coords.lat));
-                console.log('X (Breite):', Math.round(coords.lng));
-                console.log('Format für Array: [' + Math.round(coords.lat) + ', ' + Math.round(coords.lng) + ']');
-                console.log('=========================');
+            img.onload = function() {
+                // Bild-Dimensionen automatisch auslesen
+                var imageWidth = img.naturalWidth;
+                var imageHeight = img.naturalHeight;
                 
-                // Zeige einen temporären Marker an der geklickten Stelle
-                if (coordinateMarker) {
-                    map.removeLayer(coordinateMarker);
-                }
+                console.log('Bild geladen - Maße:', imageWidth, 'x', imageHeight);
                 
-                coordinateMarker = L.circleMarker(coords, {
-                    radius: 8,
-                    color: 'red',
-                    fillColor: '#ff0000',
-                    fillOpacity: 0.5
-                }).addTo(map);
+                // Berechne die Bounds für das Bild
+                var bounds = [[0, 0], [imageHeight, imageWidth]];
                 
-                // Zeige Popup mit Koordinaten
-                coordinateMarker.bindPopup(
-                    '<strong>Koordinaten:</strong><br>' +
-                    'Y: ' + Math.round(coords.lat) + '<br>' +
-                    'X: ' + Math.round(coords.lng) + '<br>' +
-                    '<small>[' + Math.round(coords.lat) + ', ' + Math.round(coords.lng) + ']</small>'
-                ).openPopup();
-            });
-            */
-            // ========================================
-            
-            // ========================================
-            // POLYGON-SYSTEM
-            // ========================================
-            var polygons = [];
-            
-            // Zeichne alle Polygone aus dem Array
-            polygonData.forEach(function(item) {
-                var polygon = L.polygon(item.coordinates, {
-                    color: 'transparent',
-                    fillColor: 'transparent',
-                    fillOpacity: 0,
-                    weight: 0
-                }).addTo(map);
+                // Berechne den initialen Zoom, sodass die Bildhöhe der Bildschirmhöhe entspricht
+                var viewportHeight = window.innerHeight;
+                var viewportWidth = window.innerWidth;
+                var initialZoom = Math.log2(viewportHeight / imageHeight);
                 
-                // Speichere Polygon mit Daten
-                polygons.push({
-                    layer: polygon,
-                    data: item
+                // Berechne minZoom so, dass keine weißen Ränder erscheinen
+                // Das Bild muss immer mindestens so groß sein, dass es den gesamten Viewport ausfüllt
+                var minZoomHeight = Math.log2(viewportHeight / imageHeight);
+                var minZoomWidth = Math.log2(viewportWidth / imageWidth);
+                var minZoom = Math.max(minZoomHeight, minZoomWidth);
+                
+                // Erstelle die Karte ohne Standard-Tiles
+                var map = L.map('map', {
+                    crs: L.CRS.Simple,
+                    minZoom: minZoom,
+                    maxZoom: 2,
+                    center: [0, 0],
+                    zoom: initialZoom,
+                    zoomControl: true,
+                    attributionControl: false,
+                    maxBounds: bounds,
+                    maxBoundsViscosity: 1.0
                 });
                 
-                // Klick-Event für Polygon
-                polygon.on('click', function(e) {
-                    L.DomEvent.stopPropagation(e); // Verhindere dass map.click auch ausgelöst wird
-                    showPolygonInfo(item, e.latlng); // Übergebe auch die Klick-Position
-                });
-            });
-            
-            // Funktion zum Anzeigen der Polygon-Info
-            var currentBubble = null;
-            
-            function showPolygonInfo(data, clickPosition) {
-                console.log('Polygon angeklickt:', data.name);
+                // Füge das Bild als Overlay hinzu
+                var image = L.imageOverlay('./Assets/background/DE_haus_aussen.png', bounds).addTo(map);
                 
-                // Entferne alte Sprechblase falls vorhanden
-                if (currentBubble) {
-                    currentBubble.remove();
-                }
+                // Setze die initiale Ansicht mit dem berechneten Zoom
+                map.setView([imageHeight / 2, imageWidth / 2], initialZoom);
+                // Setze die initiale Ansicht mit dem berechneten Zoom
+                map.setView([imageHeight / 2, imageWidth / 2], initialZoom);
                 
-                // Berechne Position für Sprechblase (nutze Klickposition)
-                var point = map.latLngToContainerPoint(clickPosition);
+                // ========================================
+                // KOORDINATEN-ANZEIGE (für Entwicklung)
+                // ========================================
+                // AUSKOMMENTIEREN wenn fertig!
                 
-                // Erstelle Sprechblase
-                var bubble = document.createElement('div');
-                bubble.className = 'speech-bubble';
+                var coordinateMarker = null;
                 
-                // Positioniere die Sprechblase so, dass der Pfeil (bei 50px) genau auf die Klickstelle zeigt
-                bubble.style.left = (point.x - 50) + 'px';
-                bubble.style.top = (point.y - 100) + 'px';
-                
-                // Fülle Sprechblase mit Inhalt (OHNE Titel)
-                bubble.innerHTML = 
-                    '<button class="close-btn" onclick="closeSpeechBubble()">×</button>' +
-                    '<p class="bubble-text">' + data.text + '</p>' +
-                    (data.audio ? '<button class="audio-btn" onclick="playAudio(\'' + data.audio + '\')">🔊 Anhören</button>' : '');
-                
-                // Füge Sprechblase zum DOM hinzu
-                document.body.appendChild(bubble);
-                currentBubble = bubble;
-                
-                // Spiele Audio ab (wenn vorhanden)
-                if (data.audio) {
-                    playAudio(data.audio);
-                }
-            }
-            
-            // Funktion zum Schließen der Sprechblase
-            window.closeSpeechBubble = function() {
-                if (currentBubble) {
-                    // Starte Ausblend-Animation
-                    currentBubble.classList.add('closing');
+                map.on('click', function(e) {
+                    var coords = e.latlng;
+                    console.log('=========================');
+                    console.log('Geklickte Koordinaten:');
+                    console.log('Y (Höhe):', Math.round(coords.lat));
+                    console.log('X (Breite):', Math.round(coords.lng));
+                    console.log('Format für Array: [' + Math.round(coords.lat) + ', ' + Math.round(coords.lng) + ']');
+                    console.log('=========================');
                     
-                    // Entferne Element nach Animation
-                    setTimeout(function() {
-                        if (currentBubble) {
-                            currentBubble.remove();
-                            currentBubble = null;
-                        }
-                    }, 200); // 200ms = Dauer der Animation
-                }
-            };
-            
-            // Schließe Sprechblase bei Karten-Bewegung
-            map.on('movestart', function() {
-                closeSpeechBubble();
-            });
-            
-            // Schließe Sprechblase auch beim Zoomen
-            map.on('zoomstart', function() {
-                closeSpeechBubble();
-            });
-            
-            // Hilfsfunktion: Berechne Zentrum eines Polygons
-            function calculatePolygonCenter(coordinates) {
-                var sumLat = 0;
-                var sumLng = 0;
-                coordinates.forEach(function(coord) {
-                    sumLat += coord[0];
-                    sumLng += coord[1];
+                    // Zeige einen temporären Marker an der geklickten Stelle
+                    if (coordinateMarker) {
+                        map.removeLayer(coordinateMarker);
+                    }
+                    
+                    coordinateMarker = L.circleMarker(coords, {
+                        radius: 8,
+                        color: 'red',
+                        fillColor: '#ff0000',
+                        fillOpacity: 0.5
+                    }).addTo(map);
+                    
+                    // Zeige Popup mit Koordinaten
+                    coordinateMarker.bindPopup(
+                        '<strong>Koordinaten:</strong><br>' +
+                        'Y: ' + Math.round(coords.lat) + '<br>' +
+                        'X: ' + Math.round(coords.lng) + '<br>' +
+                        '<small>[' + Math.round(coords.lat) + ', ' + Math.round(coords.lng) + ']</small>'
+                    ).openPopup();
                 });
-                return [sumLat / coordinates.length, sumLng / coordinates.length];
-            }
-            
-            // Audio-Player Funktion
-            window.playAudio = function(audioPath) {
-                if (!audioPath) return;
+               
+                // ========================================
                 
-                var audio = new Audio(audioPath);
-                audio.play().catch(function(error) {
-                    console.log('Audio konnte nicht abgespielt werden:', error);
+                // ========================================
+                // POLYGON-SYSTEM
+                // ========================================
+                var polygons = [];
+                
+                // Zeichne alle Polygone aus dem Array
+                polygonData.forEach(function(item) {
+                    var polygon = L.polygon(item.coordinates, {
+                        color: 'transparent',
+                        fillColor: 'transparent',
+                        fillOpacity: 0,
+                        weight: 0
+                    }).addTo(map);
+                    
+                    // Speichere Polygon mit Daten
+                    polygons.push({
+                        layer: polygon,
+                        data: item
+                    });
+                    
+                    // Klick-Event für Polygon
+                    polygon.on('click', function(e) {
+                        L.DomEvent.stopPropagation(e); // Verhindere dass map.click auch ausgelöst wird
+                        showPolygonInfo(item, e.latlng); // Übergebe auch die Klick-Position
+                    });
                 });
-            };
-            // ========================================
-            
-            // Zeige Pfeile nach 4 Sekunden an
-            var arrowTimeout = setTimeout(function() {
-                $('.arrow').addClass('show');
-            }, 4000);
-            
-            // Verstecke Pfeile bei jeder Interaktion
-            map.on('mousedown touchstart drag', function() {
-                clearTimeout(arrowTimeout);
-                $('.arrow').removeClass('show');
-            });
+                
+                // Funktion zum Anzeigen der Polygon-Info
+                var currentBubble = null;
+                
+                function showPolygonInfo(data, clickPosition) {
+                    console.log('Polygon angeklickt:', data.name);
+                    
+                    // Entferne alte Sprechblase falls vorhanden
+                    if (currentBubble) {
+                        currentBubble.remove();
+                    }
+                    
+                    // Berechne Position für Sprechblase (nutze Klickposition)
+                    var point = map.latLngToContainerPoint(clickPosition);
+                    
+                    // Erstelle Sprechblase
+                    var bubble = document.createElement('div');
+                    bubble.className = 'speech-bubble';
+                    
+                    // Positioniere die Sprechblase so, dass der Pfeil (bei 50px) genau auf die Klickstelle zeigt
+                    bubble.style.left = (point.x - 50) + 'px';
+                    bubble.style.top = (point.y - 100) + 'px';
+                    
+                    // Fülle Sprechblase mit Inhalt (OHNE Titel)
+                    bubble.innerHTML = 
+                        '<button class="close-btn" onclick="closeSpeechBubble()">×</button>' +
+                        '<p class="bubble-text">' + data.text + '</p>' +
+                        (data.audio ? '<button class="audio-btn" onclick="playAudio(\'' + data.audio + '\')">🔊 Anhören</button>' : '');
+                    
+                    // Füge Sprechblase zum DOM hinzu
+                    document.body.appendChild(bubble);
+                    currentBubble = bubble;
+                    
+                    // Spiele Audio ab (wenn vorhanden)
+                    if (data.audio) {
+                        playAudio(data.audio);
+                    }
+                }
+                
+                // Funktion zum Schließen der Sprechblase
+                window.closeSpeechBubble = function() {
+                    if (currentBubble) {
+                        // Starte Ausblend-Animation
+                        currentBubble.classList.add('closing');
+                        
+                        // Entferne Element nach Animation
+                        setTimeout(function() {
+                            if (currentBubble) {
+                                currentBubble.remove();
+                                currentBubble = null;
+                            }
+                        }, 200); // 200ms = Dauer der Animation
+                    }
+                };
+                
+                // Schließe Sprechblase bei Karten-Bewegung
+                map.on('movestart', function() {
+                    closeSpeechBubble();
+                });
+                
+                // Schließe Sprechblase auch beim Zoomen
+                map.on('zoomstart', function() {
+                    closeSpeechBubble();
+                });
+                
+                // Hilfsfunktion: Berechne Zentrum eines Polygons
+                function calculatePolygonCenter(coordinates) {
+                    var sumLat = 0;
+                    var sumLng = 0;
+                    coordinates.forEach(function(coord) {
+                        sumLat += coord[0];
+                        sumLng += coord[1];
+                    });
+                    return [sumLat / coordinates.length, sumLng / coordinates.length];
+                }
+                
+                // Audio-Player Funktion
+                window.playAudio = function(audioPath) {
+                    if (!audioPath) return;
+                    
+                    var audio = new Audio(audioPath);
+                    audio.play().catch(function(error) {
+                        console.log('Audio konnte nicht abgespielt werden:', error);
+                    });
+                };
+                // ========================================
+                
+                // Zeige Pfeile nach 4 Sekunden an
+                var arrowTimeout = setTimeout(function() {
+                    $('.arrow').addClass('show');
+                }, 4000);
+                
+                // Verstecke Pfeile bei jeder Interaktion
+                map.on('mousedown touchstart drag', function() {
+                    clearTimeout(arrowTimeout);
+                    $('.arrow').removeClass('show');
+                });
+            }; // Ende von img.onload
         });
     </script>
 </body>

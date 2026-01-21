@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title>Dialog testdurchlauf</title>
+    <script src="./DE_scene1_jsonDialog.js"></script>
+	<script type="text/javascript" src="./jquery.min.js"></script>
+	<link rel="stylesheet" href="https://use.typekit.net/jxt0ckq.css">
+		<!-- font-family: "moonblossom", sans-serif; -->
+		<!-- font-weight: 400; -->
+		<!-- font-style: normal; -->
+		<link rel="stylesheet" href="https://use.typekit.net/eae7gsr.css">
+		<!-- font-family: "duper", sans-serif; -->
+		<!-- font-weight: 600; -->
+		<!-- font-style: normal; -->
+	
+	
+<style> 
+
+html, body{
+	background-color: #ffc062;
+	top: 0px; 
+	left: 0px; 
+	padding: 0; 
+	margin: 0; 
+	height: 100%; 
+	width: 100%; 
+	z-index: 8; 
+	position: fixed; 
+	overflow: hidden;
+	
+font-family: "duper", sans-serif;
+font-weight: 600;
+font-style: normal;
+
+-webkit-user-select: none; /* Chrome, Safari, Opera */
+-moz-user-select: none; /* Firefox */
+-ms-user-select: none; /* IE 10+ */
+user-select: none; /* Standard */
+
+}
+
+
+.speechbublediv{
+	position: absolute; 
+	bottom: 0px; 
+	height: 30vw; 
+	left: 0px; 
+	width: 100vw; 
+	z-index: 99; 
+
+  background-image: url('./Assets/links.PNG'); 
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+
+  
+  display: flex; 
+  flex-direction: column;
+  justify-content: center; 
+  align-items: center; 
+  padding: 20px; 
+
+}
+
+.characterdiv{
+	height: 100vh; 
+	width: 100vw;
+	top: 0px;
+	left: 0px;
+	position: absolute; 
+	margin: 0;
+	padding: 0;  
+}
+
+
+.leftcharacter{
+	position: absolute;  
+	height: 150vh;
+	width: 100vw;  
+  left: -400px;
+  bottom: -350px;
+ 
+  background-image: url('./Assets/characters/main/friedolin.PNG'); 
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  z-index: 99; 
+}
+
+.rightcharacter{
+	position: absolute; 
+	height: 100vh; 
+	width: 60vw;
+  right: -190px;   
+  bottom: -50px; 
+  background-image: url('./Assets/characters/main/poco.PNG'); 
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  z-index: 99; 
+}
+
+.textposition{
+	width:  80%; 
+  margin-top: 7%;
+  font-size: 4vw;
+}
+
+
+
+#sprecherName{
+  position: absolute; 
+  text-align: left;
+  top: 20%; 
+  left: 10%; 
+  font-size: 2.5vw;
+  color: grey;
+  width: 80%;  
+}
+
+/* Name Input Overlay */
+#nameInputOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.8);
+  z-index: 9999;
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+
+#nameInputDialog {
+  background-color: #ffc062;
+  border-radius: 20px;
+  padding: 40px;
+  max-width: 500px;
+  width: 90%;
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  border: 4px solid #ff9d00;
+}
+
+#nameInputDialog h2 {
+  margin: 0 0 20px 0;
+  color: #333;
+  font-size: 28px;
+  font-family: "duper", sans-serif;
+  font-weight: 600;
+}
+
+#nameInputDialog p {
+  margin: 0 0 30px 0;
+  color: #333;
+  font-size: 18px;
+  line-height: 1.4;
+}
+
+#playerNameInput {
+  width: 100%;
+  padding: 15px;
+  font-size: 20px;
+  border: 3px solid #ff9d00;
+  border-radius: 10px;
+  text-align: center;
+  font-family: "duper", sans-serif;
+  font-weight: 600;
+  background: white;
+  color: #333;
+  margin-bottom: 20px;
+  box-sizing: border-box;
+}
+
+#playerNameInput:focus {
+  outline: none;
+  border-color: #333;
+  box-shadow: 0 0 10px rgba(255, 157, 0, 0.5);
+}
+
+#confirmNameBtn {
+  background-color: #ff9d00;
+  border: none;
+  color: white;
+  padding: 15px 30px;
+  font-size: 18px;
+  font-weight: bold;
+  border-radius: 10px;
+  cursor: pointer;
+  font-family: "duper", sans-serif;
+  transition: all 0.3s ease;
+  min-width: 120px;
+}
+
+#confirmNameBtn:hover {
+  background-color: #333;
+  transform: scale(1.05);
+}
+
+#confirmNameBtn:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Antwort-Buttons im Dialog */
+#answerButtons {
+  display: none;
+  flex-direction: row;
+  gap: 20px;
+/*   margin-top: 25px; */
+  width: 100%;
+  align-self: stretch;
+  justify-content: center;
+}
+
+.answer-btn {
+  background-color: #4CAF50;
+  border: 3px solid #333;
+  color: white;
+  padding: 15px 20px;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 25px;
+  cursor: pointer;
+  font-family: "duper", sans-serif;
+  transition: all 0.3s ease;
+  text-align: center;
+  min-height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+  flex: 1;
+  max-width: 400px;
+}
+
+.answer-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.4);
+}
+
+.answer-btn.yes {
+  background-color: #4CAF50;
+}
+
+.answer-btn.yes:hover {
+  background-color: #45a049;
+}
+
+.answer-btn.no {
+  background-color: #f44336;
+}
+
+.answer-btn.no:hover {
+  background-color: #da190b;
+}
+
+/* Entferne margin-bottom vom Dialogtext wenn Antwortbuttons sichtbar sind */
+#answerButtons:not([style*="display: none"]) ~ .dialogtext.textposition,
+.speechbublediv:has(#answerButtons:not([style*="display: none"])) .dialogtext.textposition {
+  margin-bottom: 0 !important;
+}
+
+/* Second Chance Button nach "Nein"-Dialog */
+#secondChanceButton {
+  display: none;
+  margin-top: 25px;
+  width: 100%;
+  justify-content: center;
+}
+
+/* Kleinere Schrift für langen noDialog-Text */
+.dialogtext.smaller-text {
+  font-size: 3.2vw !important;
+}
+
+
+</style>
+
+
+
+</head>
+
+
+
+<body>
+
+<!-- Name Input Overlay -->
+<div id="nameInputOverlay">
+  <div id="nameInputDialog">
+    <h2>Wie heißt du denn?</h2>
+    <p>Fridolin möchte deinen Namen wissen! Gib ihn hier ein:</p>
+    <input type="text" id="playerNameInput" placeholder="Dein Name..." maxlength="20" autocomplete="off">
+    <br>
+    <button id="confirmNameBtn" disabled>Bestätigen</button>
+  </div>
+</div>
+
+<div class = "characterdiv"> 
+  <div class = "leftcharacter" > </div>
+  <div class = "rightcharacter" > </div>
+</div>
+
+<div class = "speechbublediv" > 
+  <p id="sprecherName">Friedolin</p>
+  <p class = "dialogtext textposition"> test</p>
+  
+  <!-- Antwort-Buttons (versteckt by default) -->
+  <div id="answerButtons">
+    <button class="answer-btn yes" id="yesBtn">
+      ✅ Ja, gerne! Ich komme mit euch!
+    </button>
+    <button class="answer-btn no" id="noBtn">
+      ❌ Nein, ich bleibe lieber hier.
+    </button>
+  </div>
+
+  <!-- Second Chance Button nach "Nein"-Dialog -->
+  <div id="secondChanceButton" style="display: none;">
+    <button class="answer-btn yes" id="changeMyMindBtn">
+      💭 Na gut, dann komme ich eben mit!
+    </button>
+  </div>
+</div>
+
+
+
+<audio id="dialogAudio" controls style="display: none;">
+  <source id="audioSource" src="./Assets/voices/kapitel1/fridolin/f1.mp3" type="audio/mpeg">
+  Dein Browser unterstützt das Audio-Element nicht.
+</audio>
+
+
+<script> 
+  var datenjson = JSON.parse(datenJson);
+console.log(datenjson); 
+
+// Aktueller Index im JSON-Array
+var currentIndex = 0;
+var playerName = ""; // Spielername
+var nameEntered = false; // Flag ob Name eingegeben wurde
+var showingAnswerButtons = false; // Flag für Antwortbuttons
+var playerSaidNo = false; // Flag wenn Spieler "Nein" gesagt hat
+var showingSecondChanceButton = false; // Flag für "Doch mitmachen"-Button
+
+// LocalStorage-Funktionen für Spielername (ersetzt Cookies)
+function setPlayerName(name) {
+  try {
+    localStorage.setItem('playerName', name);
+    console.log("Spielername in localStorage gespeichert:", name);
+    
+    // Sofortige Verifikation
+    setTimeout(() => {
+      let check = getStoredPlayerName();
+      console.log("LocalStorage-Verifikation:", check);
+    }, 100);
+    return true;
+  } catch(e) {
+    console.error("Fehler beim Speichern in localStorage:", e);
+    return false;
+  }
+}
+
+// Erweiterte Spielfortschritt-Speicherung - NUR Szenename und Spielername
+function saveGameProgress() {
+  const currentScene = window.location.pathname.split('/').pop() || 'DE_scene1_dialogue_welcome.html';
+  const progressData = {
+    playerName: playerName,
+    nameEntered: nameEntered,
+    currentScene: currentScene,
+    timestamp: Date.now(),
+    version: '1.0'
+  };
+  
+  try {
+    localStorage.setItem('gameProgress', JSON.stringify(progressData));
+    console.log("Spielfortschritt gespeichert (nur Name + Szene):", progressData);
+    return true;
+  } catch(e) {
+    console.error("Fehler beim Speichern des Spielfortschritts:", e);
+    return false;
+  }
+}
+
+function loadGameProgress() {
+  try {
+    const saved = localStorage.getItem('gameProgress');
+    if (saved) {
+      const progressData = JSON.parse(saved);
+      console.log("Spielfortschritt geladen:", progressData);
+      
+      // Prüfe ob wir in der gleichen Szene sind
+      const currentScene = window.location.pathname.split('/').pop() || 'DE_scene1_dialogue_welcome.html';
+      if (progressData.currentScene === currentScene) {
+        // Lade nur Spielername, nicht den Index
+        console.log("Gleiche Szene - nur Spielername laden");
+        return { playerName: progressData.playerName, nameEntered: progressData.nameEntered };
+      } else {
+        console.log("Andere Szene im Fortschritt - nur Spielername laden");
+        return { playerName: progressData.playerName, nameEntered: progressData.nameEntered };
+      }
+    }
+    return null;
+  } catch(e) {
+    console.error("Fehler beim Laden des Spielfortschritts:", e);
+    return null;
+  }
+}
+
+function autoSaveProgress() {
+  // Automatisches Speichern bei wichtigen Änderungen
+  saveGameProgress();
+}
+
+function getStoredPlayerName() {
+  try {
+    let stored = localStorage.getItem('playerName');
+    console.log("localStorage gelesen:", stored);
+    return stored;
+  } catch(e) {
+    console.error("Fehler beim Lesen aus localStorage:", e);
+    return null;
+  }
+}
+
+function deleteStoredPlayerName() {
+  try {
+    localStorage.removeItem('playerName');
+    console.log("Spielername aus localStorage gelöscht");
+    return true;
+  } catch(e) {
+    console.error("Fehler beim Löschen aus localStorage:", e);
+    return false;
+  }
+}
+
+// Prüfe beim Laden ob bereits ein Name gespeichert ist
+function checkSavedPlayerName() {
+  console.log("=== Spielfortschritt-Check startet ===");
+  
+  // Zuerst versuchen, kompletten Spielfortschritt zu laden
+  const progressData = loadGameProgress();
+  if (progressData && progressData.playerName) {
+    playerName = progressData.playerName;
+    nameEntered = progressData.nameEntered || true;
+    console.log('✅ Spielfortschritt geladen - Spielername:', playerName);
+    return true;
+  }
+  
+  // Fallback: Nur Spielername laden (alte Methode)
+  let savedName = getStoredPlayerName();
+  console.log("Fallback LocalStorage-Check: Rohdaten =", savedName);
+  
+  if (savedName && savedName !== 'null' && savedName.trim().length >= 2) {
+    playerName = savedName.trim();
+    nameEntered = true;
+    console.log('✅ Gültiger Spielername gefunden (Fallback):', playerName);
+    return true;
+  }
+  console.log('❌ Kein gültiger Spielername gefunden');
+  return false;
+}
+
+// Extra Dialog wenn Spieler "Nein" sagt
+var noDialog = {
+  "Name": "Fridolin",
+  "text": "\"Oh... das ist aber schade! Aber vielleicht änderst du ja noch deine Meinung. Wir würden uns wirklich freuen, wenn du mitkommst!\"",
+  "sprechSeite": "links",
+  "voiceelement": "/kapitel1/fridolin/fs4.mp3"
+};
+
+console.log("current Index text",currentIndex );
+
+// Name Input Funktionalität
+function showNameInput() {
+  document.getElementById('nameInputOverlay').style.display = 'flex';
+  document.getElementById('playerNameInput').focus();
+}
+
+function hideNameInput() {
+  document.getElementById('nameInputOverlay').style.display = 'none';
+}
+
+// Name Input Event Handlers
+document.getElementById('playerNameInput').addEventListener('input', function() {
+  const name = this.value.trim();
+  const confirmBtn = document.getElementById('confirmNameBtn');
+  
+  if (name.length >= 2) {
+    confirmBtn.disabled = false;
+  } else {
+    confirmBtn.disabled = true;
+  }
+});
+
+// Enter-Taste zum Bestätigen
+document.getElementById('playerNameInput').addEventListener('keypress', function(e) {
+  if (e.key === 'Enter') {
+    const name = this.value.trim();
+    if (name.length >= 2) {
+      confirmName();
+    }
+  }
+});
+
+// Name bestätigen
+document.getElementById('confirmNameBtn').addEventListener('click', function() {
+  confirmName();
+});
+
+function confirmName() {
+  const name = document.getElementById('playerNameInput').value.trim();
+  if (name.length >= 2) {
+    playerName = name;
+    nameEntered = true;
+    
+    // Speichere Namen im localStorage
+    setPlayerName(name);
+    console.log('Spielername gesetzt:', name);
+    
+    hideNameInput();
+    
+    console.log('Spielername gesetzt:', playerName);
+    
+    // WICHTIG: clickProcessed Flag zurücksetzen für weitere Navigation
+    clickProcessed = false;
+    
+    // Weiter zum nächsten Dialog (Poco's Antwort)
+    currentIndex++;
+    showCurrentText();
+    console.log("current Index nach Name-Eingabe:", currentIndex);
+    
+    // Automatisch Fortschritt speichern
+    autoSaveProgress();
+  }
+}
+
+// Verhindere dass Name-Input-Klicks das Spiel beeinflussen
+document.getElementById('nameInputOverlay').addEventListener('click', function(e) {
+  e.stopPropagation();
+});
+
+document.getElementById('nameInputDialog').addEventListener('click', function(e) {
+  e.stopPropagation();
+});
+
+// Antwort-Button Event Handlers
+document.getElementById('yesBtn').addEventListener('click', function(e) {
+  e.stopPropagation();
+  playerAnswered('yes');
+});
+
+document.getElementById('noBtn').addEventListener('click', function(e) {
+  e.stopPropagation();
+  playerAnswered('no');
+});
+
+// Second Chance Button Event Handler
+document.getElementById('changeMyMindBtn').addEventListener('click', function(e) {
+  e.stopPropagation();
+  playerChangedMind();
+});
+
+function playerChangedMind() {
+  $("#secondChanceButton").fadeOut(300);
+  showingSecondChanceButton = false;
+  clickProcessed = false; // Reset clickProcessed damit Navigation wieder funktioniert
+  
+  // Setze margin-bottom vom Dialogtext zurück
+  $(".dialogtext.textposition").css('margin-bottom', '');
+  
+  console.log('Spieler hat es sich anders überlegt - kommt doch mit!');
+  
+  // Reset playerSaidNo und gehe zu Index 5 (Fridolins "Super! Schön, dass du da bist!")
+  playerSaidNo = false;
+  currentIndex = 5; // Index 5 ist Fridolin: "Super! Schön, dass du da bist! Lass uns den Tag zusammen verbringen!"
+  
+  // Automatisch Fortschritt speichern
+  autoSaveProgress();
+  
+  setTimeout(() => {
+    showCurrentText();
+    clickProcessed = false; // Sicherheitshalber nochmal zurücksetzen
+    console.log("Weiter zu Index 5 - Fridolins freudiger Dialog");
+  }, 500);
+}
+
+function playerAnswered(answer) {
+  $("#answerButtons").fadeOut(300);
+  showingAnswerButtons = false;
+  clickProcessed = false; // Reset clickProcessed damit Navigation wieder funktioniert
+  
+  // Setze margin-bottom vom Dialogtext zurück
+  $(".dialogtext.textposition").css('margin-bottom', '');
+  
+  if (answer === 'yes') {
+    console.log('Spieler hat JA gesagt - Abenteuer geht weiter!');
+    currentIndex = 5; // Zu Index 5 ("Super! Schön, dass du da bist! Lass uns den Tag zusammen verbringen!")
+    
+    // Reset Answer Button Status
+    showingAnswerButtons = false;
+    
+    // Automatisch Fortschritt speichern
+    autoSaveProgress();
+    
+    setTimeout(() => {
+      showCurrentText();
+      clickProcessed = false; // Sicherheitshalber nochmal zurücksetzen
+    }, 500);
+    
+  } else if (answer === 'no') {
+    console.log('Spieler hat NEIN gesagt - Extra Dialog');
+    playerSaidNo = true;
+    currentIndex = datenjson.length; // Setze auf "virtuellen" Index für No-Dialog
+    
+    // Reset Answer Button Status
+    showingAnswerButtons = false;
+    
+    // Automatisch Fortschritt speichern
+    autoSaveProgress();
+    
+    setTimeout(() => {
+      showCurrentText();
+      clickProcessed = false; // Sicherheitshalber nochmal zurücksetzen
+    }, 500);
+  }
+}
+
+
+$("#overlaybriefkastenImage").on("click", function(event) {
+    // Verhindere, dass das Klickereignis weitergeleitet wird
+    event.stopPropagation();
+    
+    // Führe hier den Code aus, den du für das Klicken auf das div ausführen möchtest
+});
+
+var clickProcessed = false;
+var spielPausiert = false; // Blockiert alle Touch/Click Events wenn true
+
+function showKlickHelper() {
+        $("#klickhelper").fadeIn("slow");
+    }
+
+    // Setze Timer
+    timer = setTimeout(showKlickHelper, 6000); // 6000 Millisekunden entsprechen 6 Sekunden
+
+    // Überwache Klick auf das Element mit der ID #overlaybriefkasten
+    $("#overlaybriefkasten").on("click", function() {
+        // Lösche den Timer, wenn ein Klick erfolgt
+        clearTimeout(timer);
+    });
+
+// Funktion zum Anzeigen des aktuellen Textes
+function showCurrentText(playAudio = true) {
+
+  console.log("showCurrentText aufgerufen - currentIndex:", currentIndex, "showingAnswerButtons:", showingAnswerButtons);
+
+  if (showingAnswerButtons) {
+    console.log("showCurrentText beendet - Antwortbuttons werden angezeigt");
+    return;
+  }
+  
+  var dialogue;
+  
+  // Spezialbehandlung für "Nein"-Dialog
+  if (playerSaidNo && currentIndex === datenjson.length) {
+    dialogue = noDialog;
+    console.log("Zeige Nein-Dialog");
+  } else {
+    if (currentIndex >= datenjson.length) {
+      console.log("Fehler: currentIndex außerhalb des Arrays:", currentIndex, "von", datenjson.length);
+      return;
+    }
+    dialogue = datenjson[currentIndex]; 
+    console.log("Zeige regulären Dialog Index", currentIndex, ":", dialogue.Name, "ID:", dialogue.id);
+  }
+
+  var dialoguetext = dialogue.text; 
+  var nameSpeaker = dialogue.Name; 
+  var side = dialogue.sprechSeite; 
+  var voiceElement = dialogue.voiceelement; 
+
+  // Spielername in Poco's Begrüßung einsetzen (Index 1)
+  if (currentIndex === 1 && playerName && nameEntered) {
+    dialoguetext = `"${playerName}! So heißt du also! Willkommen im Team!"`;
+  }
+
+  // EINFACHE Überprüfung: Nur bei Index 4 (Fridolins Abenteuer-Frage) Buttons zeigen
+  var isAdventureQuestion = (currentIndex === 4 && !playerSaidNo);
+  
+  console.log("showCurrentText - Index:", currentIndex, "DialogID:", dialogue.id, "Name:", dialogue.Name, "isAdventureQuestion:", isAdventureQuestion);
+  
+  // Verstecke alle Buttons erstmal
+  $("#answerButtons").hide();
+  $("#secondChanceButton").hide();
+  showingAnswerButtons = false; 
+  showingSecondChanceButton = false;
+
+  // Entferne erstmal alle speziellen Text-Klassen
+  $(".dialogtext").removeClass("smaller-text"); 
+
+ if ( side == "links" ){
+  console.log("links ist gefordert"); 
+  $("#sprecherName").css("text-align", "left"); 
+  $("#sprecherName").html(nameSpeaker); 
+  $(".dialogtext ").html(dialoguetext);
+  
+  // Kleinere Schrift für noDialog (langer Text)
+  var isNoDialog = (playerSaidNo && currentIndex === datenjson.length);
+  if (isNoDialog) {
+    $(".dialogtext").addClass("smaller-text");
+  }
+  
+  $(".speechbublediv").css("background-image", "url(./Assets/links.PNG)");
+  $(".rightcharacter").css({
+    "opacity": "0.5", 
+    "transition": "opacity 0.5s, transform 0.5s",
+    "transform": "translateX(10%) scale(0.9) "
+  });
+  $(".leftcharacter").css({
+    "opacity": "1",
+    "transition": "opacity 0.5s, transform 0.5s", 
+    "transform": "translateX(0%) scale(1) "
+  });
+
+ }else if (side == "rechts"){
+  console.log("rechts ist gefordert"); 
+  $("#sprecherName").css("text-align", "right");
+  $("#sprecherName").html(nameSpeaker);  
+  $(".dialogtext ").html(dialoguetext);
+  
+  // Kleinere Schrift für noDialog (langer Text)
+  var isNoDialog = (playerSaidNo && currentIndex === datenjson.length);
+  if (isNoDialog) {
+    $(".dialogtext").addClass("smaller-text");
+  }
+  
+  $(".speechbublediv").css("background-image", "url(./Assets/rechts.PNG)"); 
+  $(".leftcharacter").css({
+    "opacity": "0.5", 
+    "transition": "opacity 0.5s, transform 0.5s",
+    "transform": "translateX(-10%) scale(0.9) "
+  });
+  $(".rightcharacter").css({
+    "opacity": "1", 
+    "transition": "opacity 0.5s, transform 0.5s",
+    "transform": "translateX(0%) scale(1) "
+  });
+
+ }
+
+ // NUR bei Index 4 (Fridolins Abenteuer-Frage) Antwortbuttons zeigen
+ if (isAdventureQuestion) {
+  console.log("ANTWORT-BUTTONS: Zeige Buttons für Index", currentIndex, "- Dialog:", dialogue.Name, dialogue.text);
+  setTimeout(() => {
+    // Entferne margin-bottom vom Dialogtext für besseren Abstand
+    $(".dialogtext.textposition").css('margin-bottom', '0');
+    
+    $("#answerButtons").css('display', 'flex').hide().fadeIn(500);
+    showingAnswerButtons = true;
+    console.log("Antwortbuttons angezeigt bei Index", currentIndex);
+  }, 1500); // 1.5 Sekunden nach dem Text für bessere Sichtbarkeit
+ }
+ 
+ // Check if this is the "No" dialog after player refused
+ var isNoDialog = (playerSaidNo && currentIndex === datenjson.length);
+ if (isNoDialog) {
+   setTimeout(() => {
+     console.log("Extra-Dialog nach NEIN - zeige Second Chance Button");
+     
+     // Entferne margin-bottom vom Dialogtext für besseren Abstand
+     $(".dialogtext.textposition").css('margin-bottom', '0');
+     
+     // Zeige Second Chance Button
+     $("#secondChanceButton").css('display', 'flex').hide().fadeIn(500);
+     showingSecondChanceButton = true;
+   }, 2000); // 2 Sekunden nach dem Text, damit Spieler ihn lesen kann
+ }
+
+ // Audio nur abspielen wenn erlaubt
+ if (playAudio && audioEnabled) {
+   playCurrentAudio();
+ }
+}
+
+// Separate Funktion für Audio-Wiedergabe
+function playCurrentAudio() {
+  var dialogue;
+  
+  // Spezialbehandlung für "Nein"-Dialog auch hier
+  if (playerSaidNo && currentIndex === datenjson.length) {
+    dialogue = noDialog;
+    console.log("Spiele Audio für Nein-Dialog ab");
+  } else {
+    if (currentIndex >= datenjson.length) {
+      console.log("Fehler: currentIndex außerhalb des Arrays bei Audio-Wiedergabe:", currentIndex);
+      return;
+    }
+    dialogue = datenjson[currentIndex];
+  }
+  
+  var voiceElement = dialogue.voiceelement;
+  
+  console.log("Spiele Audio ab:", voiceElement); 
+  
+  $("#audioSource").attr("src", "./Assets/voices" + voiceElement);
+  var audio = document.getElementById("dialogAudio");
+  audio.load();
+  
+  audio.play().catch(function(error) {
+    console.log("Audio konnte nicht abgespielt werden:", error);
+  });
+}
+
+// Kontext menü aus 
+document.addEventListener('contextmenu', function(event) {
+    event.preventDefault();
+});
+
+
+
+// Event-Listener für Mausklick oder Touch LINKE ODER RECHTE SEITE:
+$(document).on('click touchstart', function(e) {
+  console.log("Click/Touch erkannt! clickProcessed:", clickProcessed, "spielPausiert:", spielPausiert);
+  
+  // Wenn das Spiel pausiert ist (Menü offen), alle Events blockieren
+  if (spielPausiert) {
+    console.log("Klick ignoriert - Spiel ist pausiert (Menü offen)");
+    e.preventDefault();
+    e.stopPropagation();
+    return;
+  }
+  
+  // Wenn ein Klick bereits verarbeitet wurde, beende die Funktion
+  if (clickProcessed) {
+    console.log("Klick ignoriert - clickProcessed ist true");
+    return;
+  }
+
+  // Setze das Flag, um anzuzeigen, dass ein Klick verarbeitet wird
+  clickProcessed = true;
+  console.log("clickProcessed auf true gesetzt");
+
+  // Die Bildschirmbreite
+  var screenWidth = $(window).width(); 
+  // Der Punkt, an dem der Benutzer geklickt oder berührt hat
+  var touchX = e.originalEvent.touches ? e.originalEvent.touches[0].clientX : e.clientX;
+
+  console.log("Touch/Click Position:", touchX, "von", screenWidth, "Pixel");
+
+  // Überprüfen, ob der Punkt links oder rechts von der Mitte des Bildschirms liegt
+  if (touchX < screenWidth / 2) {
+    console.log("Linkes Drittel wurde getippt/angeklickt");
+    
+    // Verhindere Navigation bei der Abenteuer-Frage (Index 4) - Spieler muss Antwort-Button wählen  
+    if (currentIndex === 4 && !playerSaidNo) {
+      console.log("Navigation blockiert - Spieler muss Antwort-Button bei Index 4 wählen");
+      clickProcessed = false; // Reset für weitere Versuche
+      return;
+    }
+
+    if (currentIndex > 0) {
+      currentIndex--;
+      showCurrentText();
+      console.log("current Index text",currentIndex ); 
+    }
+  } else {
+    console.log("Rechte Seite wurde getippt/angeklickt");
+    
+    // Nach dem ersten Dialog (Fridolin: "Wer bist du denn?") -> Name-Input zeigen
+    if (currentIndex === 0 && !nameEntered) {
+      console.log("Zeige Name-Input");
+      showNameInput();
+      return; // Stoppe weitere Navigation bis Name eingegeben wurde
+    }
+    
+    // Prüfe ob wir bei Antwortbuttons sind
+    if (showingAnswerButtons) {
+      console.log("Navigation blockiert - Antwortbuttons sind sichtbar");
+      return; // Keine Navigation während Antwortbuttons sichtbar sind
+    }
+    
+    // Prüfe ob wir beim Second Chance Button sind
+    if (showingSecondChanceButton) {
+      console.log("Navigation blockiert - Second Chance Button ist sichtbar");
+      return; // Keine Navigation während Second Chance Button sichtbar ist
+    }
+    
+    console.log("Navigation rechts - currentIndex vor Erhöhung:", currentIndex, "datenjson.length:", datenjson.length);
+    
+    // Verhindere Navigation bei der Abenteuer-Frage (Index 4) - Spieler muss Antwort-Button wählen
+    if (currentIndex === 4 && !playerSaidNo) {
+      console.log("Navigation blockiert - Spieler muss Antwort-Button bei Index 4 wählen");
+      clickProcessed = false; // Reset für weitere Versuche
+      return;
+    }
+    
+    if (currentIndex < datenjson.length - 1) {
+      currentIndex++;
+      console.log("Index erhöht auf:", currentIndex);
+      showCurrentText();
+      console.log("current Index text",currentIndex ); 
+      
+      // Automatisch Fortschritt speichern bei Navigation
+      autoSaveProgress();
+    } else {
+      console.log("Konversation beendet - alle Dialoge durchlaufen"); 
+      // Weiterleitung zur Suchbild-Szene
+      window.location.href = './DE_scene1_Haus_innen_Suchbild.html';
+    }
+
+  }
+
+  // Setze ein Timeout, um das Flag nach einer kurzen Zeitspanne zurückzusetzen
+  setTimeout(function() {
+    clickProcessed = false;
+  }, 500); // 500 Millisekunden als Beispielwert, je nach Bedarf anpassen
+});
+
+// Initialen Text anzeigen (ohne Audio)
+var audioEnabled = false; // Flag für Audio-Aktivierung
+
+$(document).ready(function() {
+    // Prüfe zuerst ob ein Spielername gespeichert ist
+    checkSavedPlayerName();
+    
+    // Wenn Name bereits bekannt ist, starte IMMER bei Index 1 (Poco's Dialog nach Namensabfrage)
+    if (nameEntered && playerName) {
+        console.log("Willkommen zurück,", playerName + "! Starte bei Index 1");
+        currentIndex = 1; // IMMER bei Index 1 starten wenn Name bekannt ist
+    } else {
+        console.log("Kein Name gespeichert - starte bei Index 0");
+        currentIndex = 0; // Bei Index 0 starten für Namensabfrage
+    }
+    
+    showCurrentText(false); // Text anzeigen, aber kein Audio abspielen
+    console.log("Seite geladen - Aktueller Index:", currentIndex, "Name:", playerName);
+});
+
+// Audio erst nach erster Benutzerinteraktion aktivieren
+$(document).one('click touchstart', function() {
+    audioEnabled = true;
+    console.log("Audio aktiviert durch Benutzerinteraktion");
+    // Aktuellen Dialog mit Audio abspielen
+    playCurrentAudio();
+});
+
+
+</script>
+
+<!-- Steuerungs-Menü System (Debug, Hauptmenü, Einstellungen, Hilfe) -->
+<script src="./steuerungMenu.js"></script>
+
+</body>
+</html>
